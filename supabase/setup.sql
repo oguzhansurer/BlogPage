@@ -29,6 +29,7 @@ create table if not exists public.site_profile (
 );
 alter table public.site_profile add column if not exists contact_email text not null default '';
 alter table public.site_profile add column if not exists instagram_url text not null default '';
+alter table public.site_profile add column if not exists linkedin_url text not null default '';
 alter table public.site_profile add column if not exists portrait_url text not null default '';
 alter table public.site_profile add column if not exists portrait_path text not null default '';
 create table if not exists public.site_admins (
@@ -137,3 +138,6 @@ alter table public.articles add column if not exists source_url text not null de
 -- Optional psychologist portrait stored in the public blog-covers bucket.
 alter table public.site_profile add column if not exists portrait_url text not null default '';
 alter table public.site_profile add column if not exists portrait_path text not null default '';
+
+-- Optional LinkedIn profile link shown in the public contact section.
+alter table public.site_profile add column if not exists linkedin_url text not null default '';

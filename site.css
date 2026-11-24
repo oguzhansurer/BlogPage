@@ -52,3 +52,37 @@ body{background:radial-gradient(ellipse at 12% 4%,rgba(172,81,110,.26),transpare
 .scene-flower{opacity:.66}
 .scene-sea{opacity:.68}
 @media(max-width:760px){.card-cover{height:220px}}
+
+/* Dark wine with restrained beige, black and cream accents. */
+
+:root{--bg:#28151f;--panel:#36212d;--panel2:#402633;--wine:#84344f;--rose:#d8bda7;--cream:#f7eee5;--muted:#c9b9b2;--line:rgba(247,238,229,.15);--serif:'Playfair Display',Georgia,serif;--sans:'DM Sans',sans-serif}
+body{background:radial-gradient(ellipse at 14% 2%,rgba(126,53,78,.2),transparent 35%),radial-gradient(ellipse at 88% 48%,rgba(77,39,57,.18),transparent 40%),linear-gradient(160deg,#321b28 0%,#28151f 58%,#2c1722 100%);background-attachment:fixed}
+.topline{background:linear-gradient(90deg,#321b28,#492637 50%,#321b28);color:#ead7c7}
+.nav{border-bottom-color:rgba(247,238,229,.16)}
+.navlinks{color:#e8ded7}
+.navlinks a:hover{color:#e5c6ad}
+.brandmark{background:#783047}
+.navcta,.btn,.contact-link{border-color:#cdb39f;color:#f5e9df;box-shadow:0 5px 18px rgba(9,5,8,.2)}
+.btn.fill,.navcta:hover,.btn:hover,.contact-link:hover{background:linear-gradient(135deg,#8e3a55,#6f2b43);border-color:#ad6d7d}
+.hero h1{color:#f7eee5;text-shadow:0 9px 35px rgba(9,4,8,.3)}
+.hero h1 em{color:#ddc2a9}
+.eyebrow{color:#d8bda7}
+.portrait{border-color:rgba(238,217,202,.25);background:radial-gradient(ellipse at 42% 20%,rgba(216,189,167,.28),transparent 30%),linear-gradient(145deg,#795366 0%,#563346 38%,#382331 74%,#21151d 100%);box-shadow:0 28px 70px rgba(9,4,8,.42),inset 0 1px 0 rgba(247,232,221,.2)}
+.portrait:before{border-color:rgba(238,217,202,.35);box-shadow:0 0 38px rgba(211,177,154,.1)}
+.portrait-label{background:rgba(24,14,20,.9);border-left-color:#ddc2a9}
+.ticker{background:rgba(48,25,37,.48);color:#dfc8b5}
+.card{background:linear-gradient(155deg,rgba(64,39,53,.98),rgba(49,30,42,.99));border-color:rgba(239,222,209,.15);box-shadow:0 14px 32px rgba(9,4,8,.24)}
+.card:hover{border-color:rgba(216,189,167,.52);box-shadow:0 22px 42px rgba(9,4,8,.34)}
+.card h3{color:#f7eee5}
+.card-tag{color:#ddbaa6}
+.readmore{color:#e1c5b3}
+.about{background:linear-gradient(115deg,rgba(52,30,43,.96),rgba(42,24,34,.96))}
+.quote{border-left-color:#c9a88e;color:#f0e3d8}
+.cv-column h3{color:#f4e7dc;border-bottom-color:rgba(238,222,209,.2)}
+.cv-item{border-bottom-color:rgba(238,222,209,.13)}
+.cv-item small{color:#d5b49e}
+.contact{background:linear-gradient(115deg,rgba(57,32,46,.98),rgba(43,24,35,.98));border-top:1px solid rgba(238,222,209,.12)}
+.parallax-object{filter:drop-shadow(0 18px 32px rgba(8,4,7,.4))}
+.scene-northstar{opacity:.64}
+.scene-flower{opacity:.5}
+.scene-sea{opacity:.56}

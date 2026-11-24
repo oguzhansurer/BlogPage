@@ -49,3 +49,6 @@ Ana sayfa portre fotoğrafı, İçerik Masası > Hakkımda ve özgeçmiş bölü
 
 
 Yönetim panelindeki makale formunda “Bu içeriği kısa not olarak yayınla” kutusu işaretlendiğinde içerik Kısa Notlar sayfasında listelenir. Kısa notlar normal makale ana sayfasında görünmez; seçilerek tam metin sayfasında açılabilir.
+
+
+Ana sayfada en yeni üç uzun makale görünür. Menüdeki “Makaleler” bağlantısı ve ana sayfadaki “Tüm makalelerimi gör” düğmesi tüm uzun makalelerin listelendiği `makaleler.html` sayfasını açar. Kısa notlar bu listeden ayrı tutulur.

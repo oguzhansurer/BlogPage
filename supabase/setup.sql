@@ -123,9 +123,14 @@ create policy "Site admins delete blog covers" on storage.objects for delete to 
 alter table public.site_profile add column if not exists cv_pdf_url text;
 alter table public.site_profile add column if not exists cv_pdf_path text;
 insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types) values ('professional-cv','professional-cv',true,15728640,array['application/pdf']) on conflict(id) do update set public=true,file_size_limit=15728640,allowed_mime_types=array['application/pdf'];
-create policy "Admins upload professional CV" on storage.objects for insert to authenticated with check (bucket_id='professional-cv' and exists (select 1 from public.site_admins where user_id = (select auth.uid())));
-create policy "Admins update professional CV" on storage.objects for update to authenticated using (bucket_id='professional-cv' and exists (select 1 from public.site_admins where user_id = (select auth.uid()))) with check (bucket_id='professional-cv' and exists (select 1 from public.site_admins where user_id = (select auth.uid())));
-create policy "Admins delete professional CV" on storage.objects for delete to authenticated using (bucket_id='professional-cv' and exists (select 1 from public.site_admins where user_id = (select auth.uid())));
+drop policy if exists "Admins upload professional CV" on storage.objects;
+drop policy if exists "Admins update professional CV" on storage.objects;
+drop policy if exists "Admins delete professional CV" on storage.objects;
+drop policy if exists "Admins read professional CV objects" on storage.objects;
+create policy "Admins read professional CV objects" on storage.objects for select to authenticated using (bucket_id='professional-cv' and (select auth.uid())='8e0cb641-c83e-46a5-aa56-b249d27db636'::uuid);
+create policy "Admins upload professional CV" on storage.objects for insert to authenticated with check (bucket_id='professional-cv' and (select auth.uid())='8e0cb641-c83e-46a5-aa56-b249d27db636'::uuid);
+create policy "Admins update professional CV" on storage.objects for update to authenticated using (bucket_id='professional-cv' and (select auth.uid())='8e0cb641-c83e-46a5-aa56-b249d27db636'::uuid) with check (bucket_id='professional-cv' and (select auth.uid())='8e0cb641-c83e-46a5-aa56-b249d27db636'::uuid);
+create policy "Admins delete professional CV" on storage.objects for delete to authenticated using (bucket_id='professional-cv' and (select auth.uid())='8e0cb641-c83e-46a5-aa56-b249d27db636'::uuid);
 
 
 -- Optional publication source shown at both ends of each article.

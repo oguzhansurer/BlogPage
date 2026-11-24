@@ -43,3 +43,6 @@ Makale düzenleme formunda isteğe bağlı kaynak başlığı, yazar, yayın, ta
 
 
 Ana sayfa portre fotoğrafı, İçerik Masası > Hakkımda ve özgeçmiş bölümünden JPG, PNG, WebP veya AVIF biçiminde (en fazla 5 MB) yüklenip değiştirilebilir. Görsel Supabase Storage içindeki public blog-covers kovasında saklanır.
+
+
+İletişim profilinde e-posta, Instagram ve LinkedIn profil bağlantısı yönetilebilir. LinkedIn bağlantısı ana sayfanın İletişim alanında görünür.

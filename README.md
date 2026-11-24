@@ -1,6 +1,12 @@
 # Psikolog Beyza Nur Ömültay
 
-Bordo tonlarında çok sayfalı blog. Statik HTML/CSS/JavaScript ön yüzü Supabase ile makale, profil ve kapak görsellerini saklar.
+Bordo tonlarında çok sayfalı psikoloji blogu. Statik HTML/CSS/JavaScript ön yüzü makaleleri, hakkımda ve özgeçmiş bilgilerini Supabase'de saklar.
+
+## Yayındaki site ve yönetim paneli
+
+- Site: https://beyza-nur-blog.vercel.app
+- İçerik masası: https://beyza-nur-blog.vercel.app/icerik-masasi.html
+- Supabase projesi: https://supabase.com/dashboard/project/vcpktnjgvmhxucwwhame
 
 ## Sayfalar
 
@@ -8,30 +14,26 @@ Bordo tonlarında çok sayfalı blog. Statik HTML/CSS/JavaScript ön yüzü Supa
 - `makale.html?id=...`: Tam yazı için ayrı sayfa
 - `icerik-masasi.html`: Yönetici girişi, makale/CV düzenleme paneli
 - `supabase/setup.sql`: Veritabanı tabloları, örnek yazılar ve erişim kuralları
-- `supabase-config.js`: Supabase proje URL'si ve public publishable key
+- `supabase-config.js`: Projenin URL'si ve herkese açık publishable key
 
-## Supabase'i bağlama
+## Yönetici hesabını etkinleştirme
 
-1. Supabase'de bir proje oluştur.
-2. Project URL ve publishable key değerlerini `supabase-config.js` içine koy. Bu dosyaya **secret** veya `service_role` key koyma.
-3. Supabase Dashboard > SQL Editor'da `supabase/setup.sql` içeriğini bir kez çalıştır. Bu, 3 örnek yazıyı, profil kaydını, tabloları ve yetkileri ekler.
-4. Authentication > Users bölümünde yönetici e-posta/şifresiyle bir kullanıcı oluştur.
-5. Oluşan kullanıcının UUID'sini kopyalayıp SQL Editor'da şu komutu o UUID ile çalıştır:
+Veritabanı ve örnek içerik hazır. Paneli kullanacak hesap için Supabase Dashboard'da bir defa:
+
+1. Authentication > Users > Add user yoluyla kendi e-posta adresin ve belirleyeceğin şifreyle kullanıcı oluştur.
+2. Oluşturulan kullanıcının UUID değerini kopyala.
+3. SQL Editor'da aşağıdaki sorgudaki `KULLANICI_UUID` bölümünü kendi UUID değerinle değiştirip çalıştır:
 
    ```sql
    insert into public.site_admins (user_id) values ('KULLANICI_UUID');
    ```
 
-6. `supabase-config.js` değişikliğini GitHub'a gönder. Vercel GitHub deposundan yeni sürümü otomatik dağıtır.
-7. Yönetim paneli: `/icerik-masasi.html`.
+4. Yönetim panelini açıp aynı e-posta ve şifreyle giriş yap.
 
-Ön yüz, public publishable key ile çalışır. Tablo ve Storage erişimleri `setup.sql` içindeki RLS kurallarıyla sınırlanır; `service_role` anahtarı tarayıcıda kullanılmaz.
+Bu hesabı oluşturmadan panelde oturum açılamaz. Parolanı GitHub'a veya bu projeye ekleme. Panelde makale ekleyebilir/düzenleyebilir, kapak görseli yükleyebilir, hakkımda ve eğitim bilgilerini güncelleyebilirsin.
 
-## Vercel'e yayınlama
+## Teknik notlar
 
-GitHub deposunu Vercel'e import et. Framework Preset `Other`, Build Command boş, Output Directory `.` olabilir. Bu düz HTML sitesi ayrıca derleme istemez; kökteki `index.html` ana sayfadır.
+Ön yüz, tarayıcıda kullanılmak üzere tasarlanmış Supabase publishable key ile çalışır. `service_role` veya secret key tarayıcıya eklenmemiştir. Veritabanı ve görsel yükleme izinleri RLS politikalarıyla yönetilir. Bu sitede danışan/seans bilgileri tutulmaz.
 
-## İçerik
-
-Bu sitede yalnızca herkese açık makaleler, özgeçmiş ve profil bilgileri bulunur. Danışan/seans kayıtları bu projeye eklenmemelidir.
-
+Vercel, GitHub'daki `main` dalına bağlıdır; her commit otomatik dağıtım başlatır.

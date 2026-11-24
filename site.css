@@ -194,3 +194,5 @@ body{background:radial-gradient(ellipse at 14% 2%,rgba(143,35,65,.24),transparen
 :root{--sand-light:#e5d2bc;--sand:#dbc2a5}
 .cards .card:hover{background:linear-gradient(155deg,#eee0cc,#e3ceb3)}
 @media(max-width:760px){.cards .card{background:linear-gradient(155deg,var(--sand-light),var(--sand))}}
+
+.adminbar{position:sticky;top:0;z-index:20;transition:transform .35s ease,opacity .35s ease}.adminbar.adminbar-hidden{transform:translateY(-110%);opacity:0;pointer-events:none}.adminbar.adminbar-visible{transform:translateY(0);opacity:1}.cv-teaser{padding-top:48px}.cv-page{min-height:70vh;padding-top:48px}.cv-page h1{font:48px var(--serif);font-weight:400}.cv-items{padding-left:20px;line-height:1.9}.cv-pdf{margin:48px 0}.cv-pdf iframe{width:100%;height:min(78vh,900px);border:1px solid var(--line);border-radius:8px;background:#fff}.cv-pdf .section-head{align-items:center}

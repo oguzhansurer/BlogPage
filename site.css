@@ -7,3 +7,6 @@
 /* Keep the primary section links centered independently from the side actions. */
 @media(min-width:901px){.nav{position:relative}.navlinks{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap}}
 @media(max-width:900px) and (min-width:761px){.navlinks{gap:16px;font-size:12px}.hpr-mark{font-size:23px;margin-right:12px}.navcta{padding:9px 12px}}
+
+
+.contact-links{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;margin:24px auto 0}.contact-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border:1px solid var(--rose);color:#f5e8e5;font-size:13px;transition:.2s}.contact-link:hover{background:var(--wine);border-color:var(--wine)}

@@ -14,6 +14,7 @@ create table if not exists public.articles (
   source_publisher text not null default '',
   source_date text not null default '',
   source_url text not null default '',
+  is_short boolean not null default false,
   published boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -141,3 +142,6 @@ alter table public.site_profile add column if not exists portrait_path text not 
 
 -- Optional LinkedIn profile link shown in the public contact section.
 alter table public.site_profile add column if not exists linkedin_url text not null default '';
+
+-- Mark concise daily psychology notes for the dedicated short-notes page.
+alter table public.articles add column if not exists is_short boolean not null default false;

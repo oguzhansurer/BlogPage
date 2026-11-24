@@ -86,3 +86,28 @@ body{background:radial-gradient(ellipse at 14% 2%,rgba(126,53,78,.2),transparent
 .scene-northstar{opacity:.64}
 .scene-flower{opacity:.5}
 .scene-sea{opacity:.56}
+
+/* Direction 2: deep wine canvas with selective warm cream surfaces. */
+:root{--sand:#ead9c6;--sand-light:#f3e8da;--ink:#291720;--wine-copy:#492c39;--beige-line:#d0bba5}
+.cards .card{background:linear-gradient(155deg,var(--sand-light),var(--sand));border-color:rgba(56,31,44,.16);box-shadow:0 18px 40px rgba(9,4,8,.2)}
+.cards .card:hover{background:linear-gradient(155deg,#f7eddf,#ebdac6);border-color:rgba(132,52,79,.44);box-shadow:0 25px 48px rgba(9,4,8,.3)}
+.cards .card h3{color:var(--ink)}
+.cards .card p{color:#66525a}
+.cards .card .card-tag{color:#824058}
+.cards .card .readmore{color:#743047}
+.about{background:linear-gradient(115deg,#e9d8c5 0%,#f0e3d3 54%,#e5d1bc 100%);border-block:1px solid rgba(255,243,229,.35)}
+.about-grid{align-items:center}
+.quote{color:#f7eee5;border-left:2px solid #c9aa8f;padding:18px 0 18px 26px;text-shadow:0 8px 24px rgba(22,10,17,.2)}
+.about-copy{color:#503944}
+.about-copy .eyebrow{color:#84435a}
+.about-copy h2{color:#321d29}
+.about-copy p{color:#5a454d}
+.signature{color:#7b3d54}
+.cv-column h3{color:#f3e8da;border-bottom-color:rgba(234,217,198,.27)}
+.cv-item{border-bottom-color:rgba(234,217,198,.17)}
+.cv-item small{color:#ddc4ac}
+.contact{background:linear-gradient(115deg,#3d2432,#2c1925);border-top:1px solid rgba(234,217,198,.16)}
+.portrait{box-shadow:0 30px 82px rgba(8,3,7,.48),inset 0 1px 0 rgba(249,234,219,.25)}
+.portrait:before{border-color:rgba(240,219,198,.45);box-shadow:0 0 50px rgba(233,205,177,.16)}
+.parallax-object{filter:drop-shadow(0 18px 34px rgba(7,3,7,.4))}
+@media(max-width:760px){.cards .card{background:linear-gradient(155deg,var(--sand-light),var(--sand))}.about{background:linear-gradient(160deg,#ead9c6,#e5d1bc)}}

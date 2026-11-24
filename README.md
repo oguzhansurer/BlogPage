@@ -46,3 +46,6 @@ Ana sayfa portre fotoğrafı, İçerik Masası > Hakkımda ve özgeçmiş bölü
 
 
 İletişim profilinde e-posta, Instagram ve LinkedIn profil bağlantısı yönetilebilir. LinkedIn bağlantısı ana sayfanın İletişim alanında görünür.
+
+
+Yönetim panelindeki makale formunda “Bu içeriği kısa not olarak yayınla” kutusu işaretlendiğinde içerik Kısa Notlar sayfasında listelenir. Kısa notlar normal makale ana sayfasında görünmez; seçilerek tam metin sayfasında açılabilir.

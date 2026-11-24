@@ -2,3 +2,8 @@
 :root{--bg:#171014;--panel:#20161b;--panel2:#261a20;--wine:#791f3e;--rose:#d19aa6;--cream:#f2e9e4;--muted:#b7a6a7;--line:rgba(242,233,228,.13);--serif:'Playfair Display',Georgia,serif;--sans:'DM Sans',sans-serif}
 .hpr-mark{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:700;letter-spacing:.2em;color:#f7d7df;text-shadow:0 0 7px #ed9caf,0 0 18px #bd4e72,0 0 34px #8b2448;animation:hprGlow 2.8s ease-in-out infinite alternate;white-space:nowrap;margin-left:auto;margin-right:20px}@keyframes hprGlow{from{text-shadow:0 0 5px #ed9caf,0 0 13px #bd4e72,0 0 24px #8b2448;opacity:.88}to{text-shadow:0 0 9px #ffe2e8,0 0 22px #e26b8a,0 0 42px #a72f59;opacity:1}}@media(prefers-reduced-motion:reduce){.hpr-mark{animation:none}}
 
+
+
+/* Keep the primary section links centered independently from the side actions. */
+@media(min-width:901px){.nav{position:relative}.navlinks{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap}}
+@media(max-width:900px) and (min-width:761px){.navlinks{gap:16px;font-size:12px}.hpr-mark{font-size:23px;margin-right:12px}.navcta{padding:9px 12px}}

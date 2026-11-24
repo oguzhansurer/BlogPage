@@ -207,3 +207,6 @@ body{background:radial-gradient(ellipse at 14% 2%,rgba(143,35,65,.24),transparen
 @media(max-width:760px){.short-teaser-inner{align-items:flex-start;flex-direction:column;padding:24px}.short-page{padding-top:34px}.short-cards .short-card{min-height:210px}}
 
 .article-list-cta{display:flex;justify-content:center;margin-top:28px}.all-articles-page{min-height:72vh;padding:48px 0 92px}.all-articles-page h1{font:clamp(42px,6vw,64px)/1.1 var(--serif);font-weight:400;margin:14px 0}.all-articles-intro{max-width:620px;color:var(--muted);margin:0 0 36px;line-height:1.8}.article-empty{grid-column:1/-1;padding:30px;border:1px solid var(--line);background:rgba(255,245,241,.035);color:var(--muted)}
+
+/* Match the about quote to its adjacent label. */
+.about .quote{color:#84435a}

@@ -40,3 +40,6 @@ Vercel, GitHub'daki `main` dalına bağlıdır; her commit otomatik dağıtım b
 
 
 Makale düzenleme formunda isteğe bağlı kaynak başlığı, yazar, yayın, tarih ve kaynak URL alanları bulunur. Kaynak bağlantısı makale metninin hem başında hem sonunda “Kaynak sayfasına gidin” etiketiyle görünür.
+
+
+Ana sayfa portre fotoğrafı, İçerik Masası > Hakkımda ve özgeçmiş bölümünden JPG, PNG, WebP veya AVIF biçiminde (en fazla 5 MB) yüklenip değiştirilebilir. Görsel Supabase Storage içindeki public blog-covers kovasında saklanır.

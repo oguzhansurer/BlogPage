@@ -189,3 +189,8 @@ body{background:radial-gradient(ellipse at 14% 2%,rgba(143,35,65,.24),transparen
 .scene-flower{opacity:.5;filter:drop-shadow(0 18px 30px rgba(4,1,4,.46)) saturate(.9)}
 .scene-sea{opacity:.55;filter:drop-shadow(0 20px 34px rgba(4,1,4,.48)) saturate(.92)}
 @media(max-width:760px){.cards .card{background:linear-gradient(155deg,var(--sand-light),var(--sand))}.about{background:linear-gradient(160deg,#ead9c6,#e5d1bc)}}
+
+/* Slightly deeper warm beige for the article cards. */
+:root{--sand-light:#e5d2bc;--sand:#dbc2a5}
+.cards .card:hover{background:linear-gradient(155deg,#eee0cc,#e3ceb3)}
+@media(max-width:760px){.cards .card{background:linear-gradient(155deg,var(--sand-light),var(--sand))}}

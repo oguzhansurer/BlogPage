@@ -9,6 +9,11 @@ create table if not exists public.articles (
   description text not null default '',
   body text not null default '',
   image_url text not null default '',
+  source_title text not null default '',
+  source_author text not null default '',
+  source_publisher text not null default '',
+  source_date text not null default '',
+  source_url text not null default '',
   published boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -117,3 +122,11 @@ insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types) v
 create policy "Admins upload professional CV" on storage.objects for insert to authenticated with check (bucket_id='professional-cv' and public.is_site_admin());
 create policy "Admins update professional CV" on storage.objects for update to authenticated using (bucket_id='professional-cv' and public.is_site_admin()) with check (bucket_id='professional-cv' and public.is_site_admin());
 create policy "Admins delete professional CV" on storage.objects for delete to authenticated using (bucket_id='professional-cv' and public.is_site_admin());
+
+
+-- Optional publication source shown at both ends of each article.
+alter table public.articles add column if not exists source_title text not null default '';
+alter table public.articles add column if not exists source_author text not null default '';
+alter table public.articles add column if not exists source_publisher text not null default '';
+alter table public.articles add column if not exists source_date text not null default '';
+alter table public.articles add column if not exists source_url text not null default '';

@@ -1,21 +1,37 @@
 # Psikolog Beyza Nur Ömültay
 
-Bordo tonlarında, statik HTML/CSS/JavaScript ile hazırlanmış çok sayfalı blog taslağı.
+Bordo tonlarında çok sayfalı blog. Statik HTML/CSS/JavaScript ön yüzü Supabase ile makale, profil ve kapak görsellerini saklar.
 
 ## Sayfalar
 
-- `index.html`: Ana sayfa, yazı listesi, hakkımda ve özgeçmiş
-- `makale.html?id=...`: Makaleyi ayrı sayfada gösterir
-- `icerik-masasi.html`: Tarayıcıda çalışan örnek içerik paneli
-- `site.css`, `site.js`: Ortak stiller ve sayfa işlevleri
+- `index.html`: Ana sayfa, makale kartları, hakkımda ve özgeçmiş
+- `makale.html?id=...`: Tam yazı için ayrı sayfa
+- `icerik-masasi.html`: Yönetici girişi, makale/CV düzenleme paneli
+- `supabase/setup.sql`: Veritabanı tabloları, örnek yazılar ve erişim kuralları
+- `supabase-config.js`: Supabase proje URL'si ve public publishable key
+
+## Supabase'i bağlama
+
+1. Supabase'de bir proje oluştur.
+2. Project URL ve publishable key değerlerini `supabase-config.js` içine koy. Bu dosyaya **secret** veya `service_role` key koyma.
+3. Supabase Dashboard > SQL Editor'da `supabase/setup.sql` içeriğini bir kez çalıştır. Bu, 3 örnek yazıyı, profil kaydını, tabloları ve yetkileri ekler.
+4. Authentication > Users bölümünde yönetici e-posta/şifresiyle bir kullanıcı oluştur.
+5. Oluşan kullanıcının UUID'sini kopyalayıp SQL Editor'da şu komutu o UUID ile çalıştır:
+
+   ```sql
+   insert into public.site_admins (user_id) values ('KULLANICI_UUID');
+   ```
+
+6. `supabase-config.js` değişikliğini GitHub'a gönder. Vercel GitHub deposundan yeni sürümü otomatik dağıtır.
+7. Yönetim paneli: `/icerik-masasi.html`.
+
+Ön yüz, public publishable key ile çalışır. Tablo ve Storage erişimleri `setup.sql` içindeki RLS kurallarıyla sınırlanır; `service_role` anahtarı tarayıcıda kullanılmaz.
 
 ## Vercel'e yayınlama
 
-Bu sürüm derleme gerektirmeyen statik bir sitedir. Vercel'de GitHub deposunu içe aktarırken Framework Preset olarak `Other` seçip Build Command ve Output Directory alanlarını boş bırakabilirsin. Dosyalar deponun kökünde olduğundan `index.html` ana sayfa olarak servis edilir.
+GitHub deposunu Vercel'e import et. Framework Preset `Other`, Build Command boş, Output Directory `.` olabilir. Bu düz HTML sitesi ayrıca derleme istemez; kökteki `index.html` ana sayfadır.
 
-## İçerik saklama notu
+## İçerik
 
-Şimdiki içerik paneli makale ve profil verilerini yalnızca aynı tarayıcının `localStorage` alanında tutar. Bu kayıtlar Vercel'e, GitHub'a veya başka ziyaretçilerin tarayıcılarına gönderilmez. İnternette kalıcı ve ortak içerik için sunucu taraflı kimlik doğrulama ve veritabanı gerekir. Makale/CV kayıtları için PostgreSQL (ör. Vercel Marketplace üzerinden Supabase veya Neon), görsel dosyaları için Vercel Blob kullanılabilir. Yönetim işlemleri sunucu API'leri üzerinden, sırlar yalnızca Vercel ortam değişkenlerinde tutularak yapılmalıdır.
-
-Bu blogda danışan kayıtları, seans notları veya başka hassas sağlık bilgileri saklanmamalıdır.
+Bu sitede yalnızca herkese açık makaleler, özgeçmiş ve profil bilgileri bulunur. Danışan/seans kayıtları bu projeye eklenmemelidir.
 

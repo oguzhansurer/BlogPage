@@ -37,3 +37,6 @@ Bu hesabı oluşturmadan panelde oturum açılamaz. Parolanı GitHub'a veya bu p
 Ön yüz, tarayıcıda kullanılmak üzere tasarlanmış Supabase publishable key ile çalışır. `service_role` veya secret key tarayıcıya eklenmemiştir. Veritabanı ve görsel yükleme izinleri RLS politikalarıyla yönetilir. Bu sitede danışan/seans bilgileri tutulmaz.
 
 Vercel, GitHub'daki `main` dalına bağlıdır; her commit otomatik dağıtım başlatır.
+
+
+Makale düzenleme formunda isteğe bağlı kaynak başlığı, yazar, yayın, tarih ve kaynak URL alanları bulunur. Kaynak bağlantısı makale metninin hem başında hem sonunda “Kaynak sayfasına gidin” etiketiyle görünür.

@@ -18,8 +18,12 @@ create table if not exists public.site_profile (
   about text not null default '',
   education jsonb not null default '[]'::jsonb,
   expertise jsonb not null default '[]'::jsonb,
+  contact_email text not null default '',
+  instagram_url text not null default '',
   updated_at timestamptz not null default now()
 );
+alter table public.site_profile add column if not exists contact_email text not null default '';
+alter table public.site_profile add column if not exists instagram_url text not null default '';
 create table if not exists public.site_admins (
   user_id uuid primary key references auth.users(id) on delete cascade
 );

@@ -35,6 +35,7 @@ function initAdmin(){const login=$('#loginForm');if(!login)return;const loginMsg
  $('#profileForm').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);const values={id:1,about:f.get('about'),education:f.get('education').split('\n').filter(Boolean).map(line=>{const [year,...rest]=line.split('|').map(x=>x.trim());return{year:year||'',institution:rest.join(' | ')}}),expertise:f.get('expertise').split('\n').map(x=>x.trim()).filter(Boolean),contact_email:f.get('contactEmail').trim(),instagram_url:f.get('instagramUrl').trim(),updated_at:new Date().toISOString()};const {error}=await db.from('site_profile').upsert(values,{onConflict:'id'});$('#profileMsg').textContent=error?'Bilgiler kaydedilemedi: '+error.message:'Hakkımda, özgeçmiş ve iletişim bilgileri kaydedildi.'};
  $('#logout').onclick=async()=>{await db.auth.signOut();location.reload()};
 }
-initHome();initArticle();initAdmin();
+initHome();initArticle();initAdmin();initParallax();
+function initParallax(){const scene=$('.parallax-scene');if(!scene||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;const objects=scene.querySelectorAll('[data-depth]');let frame=0;const update=()=>{frame=0;const main=$('main'),scroll=Math.max(0,window.scrollY-main.offsetTop);objects.forEach(item=>{const depth=Number(item.dataset.depth)||.5;item.style.setProperty('--parallax-y',(scroll*(1-depth)).toFixed(1)+'px')})};window.addEventListener('scroll',()=>{if(!frame)frame=requestAnimationFrame(update)},{passive:true});update()}
 })();
 

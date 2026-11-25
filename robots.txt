@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /icerik-masasi.html
+
+Sitemap: https://beyza-nur-blog.vercel.app/sitemap.xml

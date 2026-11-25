@@ -52,9 +52,9 @@ grant insert, update, delete on public.articles, public.site_profile to authenti
 grant select on public.site_admins to authenticated;
 
 drop policy if exists "Public can read published articles" on public.articles;
-create policy "Public can read published articles" on public.articles for select to anon, authenticated using (published = true);
+create policy "Public can read published articles" on public.articles for select to anon using (published = true);
 drop policy if exists "Admins can read all articles" on public.articles;
-create policy "Admins can read all articles" on public.articles for select to authenticated using ((select public.is_site_admin()));
+create policy "Signed-in users can read visible articles" on public.articles for select to authenticated using (published = true or (select public.is_site_admin()));
 drop policy if exists "Admins can add articles" on public.articles;
 create policy "Admins can add articles" on public.articles for insert to authenticated with check ((select public.is_site_admin()));
 drop policy if exists "Admins can edit articles" on public.articles;
@@ -127,10 +127,10 @@ drop policy if exists "Admins upload professional CV" on storage.objects;
 drop policy if exists "Admins update professional CV" on storage.objects;
 drop policy if exists "Admins delete professional CV" on storage.objects;
 drop policy if exists "Admins read professional CV objects" on storage.objects;
-create policy "Admins read professional CV objects" on storage.objects for select to authenticated using (bucket_id='professional-cv' and (select auth.uid())='8e0cb641-c83e-46a5-aa56-b249d27db636'::uuid);
-create policy "Admins upload professional CV" on storage.objects for insert to authenticated with check (bucket_id='professional-cv' and (select auth.uid())='8e0cb641-c83e-46a5-aa56-b249d27db636'::uuid);
-create policy "Admins update professional CV" on storage.objects for update to authenticated using (bucket_id='professional-cv' and (select auth.uid())='8e0cb641-c83e-46a5-aa56-b249d27db636'::uuid) with check (bucket_id='professional-cv' and (select auth.uid())='8e0cb641-c83e-46a5-aa56-b249d27db636'::uuid);
-create policy "Admins delete professional CV" on storage.objects for delete to authenticated using (bucket_id='professional-cv' and (select auth.uid())='8e0cb641-c83e-46a5-aa56-b249d27db636'::uuid);
+create policy "Admins read professional CV objects" on storage.objects for select to authenticated using (bucket_id='professional-cv' and (select public.is_site_admin()));
+create policy "Admins upload professional CV" on storage.objects for insert to authenticated with check (bucket_id='professional-cv' and (select public.is_site_admin()));
+create policy "Admins update professional CV" on storage.objects for update to authenticated using (bucket_id='professional-cv' and (select public.is_site_admin())) with check (bucket_id='professional-cv' and (select public.is_site_admin()));
+create policy "Admins delete professional CV" on storage.objects for delete to authenticated using (bucket_id='professional-cv' and (select public.is_site_admin()));
 
 
 -- Optional publication source shown at both ends of each article.

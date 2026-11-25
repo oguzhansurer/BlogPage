@@ -212,3 +212,43 @@ body{background:radial-gradient(ellipse at 14% 2%,rgba(143,35,65,.24),transparen
 .about .quote{color:#84435a}
 
 .article-description{font-size:17px}
+
+/* Instagram story mode: portrait 9:16 poster with a darkened, blurred cover backdrop. */
+.story-card{cursor:default}
+.story-card:hover{border-color:#9e596b;transform:translateY(-3px)}
+.card-link{display:flex;flex-direction:column;flex:1;min-width:0;color:inherit}
+.story-trigger{align-self:flex-start;margin:0 22px 18px;padding:8px 13px;border:1px solid rgba(239,180,192,.45);background:rgba(23,16,20,.22);color:#f3d9df;font-size:11px;letter-spacing:.025em;transition:background .2s,border-color .2s,transform .2s}
+.story-trigger span{margin-right:5px;color:#f0c9d1;text-shadow:0 0 10px rgba(235,143,169,.72)}
+.story-trigger:hover,.story-trigger:focus-visible{background:#653047;border-color:#efb4c0;transform:translateY(-1px)}
+.story-inline-trigger{margin:12px 0 20px}
+.story-modal[hidden]{display:none}
+.story-modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
+.story-modal-backdrop{position:absolute;inset:0;background:rgba(8,5,9,.84);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px)}
+.story-modal-panel{position:relative;z-index:1;width:min(100%,540px);height:100%;max-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.story-close{position:absolute;top:0;right:0;z-index:5;width:42px;height:42px;border:1px solid rgba(255,245,241,.24);border-radius:50%;background:rgba(27,16,23,.82);color:#fff5f1;font-size:29px;line-height:1}
+.story-modal-stage{width:100%;max-height:calc(100dvh - 158px);display:flex;align-items:center;justify-content:center}
+.story-poster{container-type:inline-size;position:relative;isolation:isolate;overflow:hidden;width:min(78vw,420px);max-height:calc(100dvh - 158px);aspect-ratio:9/16;border-radius:20px;background:linear-gradient(145deg,#3c2330,#160f15 58%,#4b1c31);box-shadow:0 28px 90px rgba(0,0,0,.58),0 0 32px rgba(168,57,92,.14)}
+.story-poster-backdrop{position:absolute;z-index:-2;inset:-9%;background-image:var(--story-image);background-size:cover;background-position:center;filter:blur(24px) brightness(.32) saturate(.8);transform:scale(1.12)}
+.story-poster:before{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(180deg,rgba(20,11,17,.35),rgba(19,11,17,.6) 56%,rgba(16,10,15,.88))}
+.story-poster-card{position:absolute;inset:5.5%;display:flex;flex-direction:column;overflow:hidden;padding:4.8%;border:1px solid rgba(243,208,215,.58);border-radius:18px;background:linear-gradient(165deg,rgba(59,29,43,.78),rgba(23,14,20,.9));box-shadow:0 12px 42px rgba(8,4,8,.35);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.story-poster-top{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:6%;color:#f4dbe0}
+.story-poster-top span{font:700 20px 'Cormorant Garamond',var(--serif);letter-spacing:.16em;text-shadow:0 0 12px rgba(230,143,166,.56)}
+.story-poster-top small{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#e2c6cc;text-align:right}
+.story-poster-cover{position:relative;flex:0 0 47%;margin-top:4%;overflow:hidden;border:1px solid rgba(255,233,233,.4);border-radius:13px;background:linear-gradient(145deg,#704056,#231720);box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.story-poster-cover img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.story-poster-cover img[hidden]{display:none}
+.story-poster-cover>span{display:grid;place-items:center;width:100%;height:100%;color:#f0c7d0;font:44px var(--serif);text-shadow:0 0 22px rgba(242,186,201,.8)}
+.story-poster-copy{display:flex;flex:1;min-height:0;flex-direction:column;padding:6% 2% 2%}
+.story-poster-category{color:#efb4c0;font-size:8px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.story-poster-copy h2{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;margin:3.5% 0 3%;color:#fff5f1;font:500 clamp(17px,5.6cqw,29px)/1.17 var(--serif);letter-spacing:-.02em}
+.story-poster-copy p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;margin:0;color:#e0d0d3;font:400 clamp(9px,2.65cqw,13px)/1.55 var(--sans)}
+.story-poster-footer{display:grid;grid-template-columns:1fr;gap:4px;margin-top:auto;padding:4% 2% 1%;border-top:1px solid rgba(239,180,192,.32);color:#d9adb8}
+.story-poster-footer span{font:500 8px var(--sans);letter-spacing:.09em;text-transform:uppercase}
+.story-poster-footer strong{color:#fff2ee;font:500 clamp(10px,2.8cqw,14px) var(--serif)}
+.story-poster-footer small{color:#d3a9b3;font:italic 8px var(--serif)}
+.story-modal-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;width:100%}
+.story-modal-actions .btn{padding:9px 14px}
+.story-modal-actions p{flex-basis:100%;min-height:18px;margin:0;color:#f0d9de;text-align:center;font-size:11px}
+body.story-open{overflow:hidden}
+@media(max-width:600px){.story-modal{padding:10px}.story-modal-panel{gap:10px}.story-modal-stage{max-height:calc(100dvh - 136px)}.story-poster{width:min(80vw,calc((100dvh - 136px)*.5625));max-height:calc(100dvh - 136px);border-radius:16px}.story-poster-card{border-radius:14px}.story-close{top:2px;right:2px;width:36px;height:36px;font-size:25px}.story-modal-actions .btn{padding:8px 11px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){.story-trigger{transition:none}}

@@ -29,7 +29,40 @@ async function initHome(){if(!$('#articleCards'))return;[articles,profile]=await
 async function initArticlesPage(){const target=$('#allArticleCards');if(!target)return;articles=await readArticles();renderCards('allArticleCards');const year=$('#year');if(year)year.textContent=new Date().getFullYear()}
 async function initCvPage(){const target=$('#cvPage');if(!target)return;profile=await readProfile();const url=profile.cv_pdf_url;target.innerHTML='<a class="article-back" href="index.html">← Ana sayfaya dön</a><div class="eyebrow">Eğitim ve mesleki yolculuk</div><h1>Özgeçmiş</h1><section class="cv-grid"><div class="cv-column"><h2>Eğitim</h2>'+renderCvItems(profile.education||[],'education')+'</div><div class="cv-column"><h2>Çalışma alanları</h2>'+renderCvItems(profile.expertise||[],'expertise')+'</div></section>'+(url?'<section class="cv-pdf"><div class="section-head"><h2>PDF özgeçmiş</h2><a class="btn" href="'+esc(url)+'" target="_blank" rel="noopener">PDF dosyasını aç ↗</a></div><iframe title="PDF özgeçmiş" src="'+esc(url)+'#view=FitH" loading="lazy"></iframe></section>':'<p class="muted">PDF özgeçmiş henüz eklenmedi.</p>')}
 function renderCvItems(items,type){return items.length?'<ul class="cv-items">'+items.map(x=>'<li>'+esc(type==='education'?((x.year||'')+' · '+(x.institution||'')):x)+'</li>').join('')+'</ul>':'<p class="muted">Henüz bilgi eklenmedi.</p>'}
-async function initArticle(){const target=$('#articleView');if(!target)return;const slug=new URLSearchParams(location.search).get('id');let article=articles.find(x=>x.slug===slug);if(db){const {data}=await db.from('articles').select('*').eq('slug',slug).eq('published',true).maybeSingle();if(data)article=data}document.title=(article?article.title:'Yazı bulunamadı')+' · Psikolog Beyza Nur Ömültay';target.innerHTML=article?'<a class="article-back" href="index.html#yazilar">← Tüm yazılara dön</a><div class="card-tag">'+esc(article.category)+' · '+esc(article.date||'Yeni yazı')+'</div><h1>'+esc(article.title)+'</h1><p class="muted" style="font-size:17px">'+esc(article.description)+'</p>'+sourceBlock(article)+(article.image_url?'<img class="article-hero" src="'+esc(article.image_url)+'" alt="'+esc(article.title)+'">':'')+'<div class="article-body">'+esc(article.body||article.description)+'</div>'+sourceBlock(article)+'<a class="article-back" href="index.html#yazilar">← Tüm yazılara dön</a>':'<a class="article-back" href="index.html#yazilar">← Tüm yazılara dön</a><h1>Bu yazı bulunamadı</h1>';document.querySelectorAll('.year').forEach(x=>x.textContent=new Date().getFullYear())}
+function setSeoMeta(selector,value){const element=$(selector);if(element&&value)element.setAttribute('content',value)}
+function updateArticleSeo(article){
+ const title=article.title+' | Psikolog Beyza Nur Ömültay';
+ const description=String(article.description||article.body||'').replace(/\\s+/g,' ').trim().slice(0,160);
+ const canonical='https://beyza-nur-blog.vercel.app/makale.html?id='+encodeURIComponent(article.slug);
+ const image=safeExternalUrl(article.image_url);
+ document.title=title;
+ setSeoMeta('meta[name="description"]',description);
+ setSeoMeta('meta[property="og:title"]',title);
+ setSeoMeta('meta[property="og:description"]',description);
+ setSeoMeta('meta[property="og:url"]',canonical);
+ setSeoMeta('meta[property="og:type"]','article');
+ setSeoMeta('meta[property="og:image"]',image);
+ setSeoMeta('meta[name="twitter:title"]',title);
+ setSeoMeta('meta[name="twitter:description"]',description);
+ setSeoMeta('meta[name="twitter:image"]',image);
+ const canonicalLink=$('link[rel="canonical"]');if(canonicalLink)canonicalLink.href=canonical;
+ const schema={'@context':'https://schema.org','@type':article.is_short?'Article':'BlogPosting',headline:article.title,description,url:canonical,mainEntityOfPage:canonical,author:{'@type':'Person',name:'Psikolog Beyza Nur Ömültay',url:'https://beyza-nur-blog.vercel.app/'}};
+ if(image)schema.image=image;
+ if(article.created_at&&!Number.isNaN(Date.parse(article.created_at)))schema.datePublished=new Date(article.created_at).toISOString();
+ if(article.updated_at&&!Number.isNaN(Date.parse(article.updated_at)))schema.dateModified=new Date(article.updated_at).toISOString();
+ let jsonLd=$('#articleStructuredData');if(!jsonLd){jsonLd=document.createElement('script');jsonLd.id='articleStructuredData';jsonLd.type='application/ld+json';document.head.appendChild(jsonLd)}
+ jsonLd.textContent=JSON.stringify(schema).replace(/</g,'\\u003c');
+}
+async function initArticle(){
+ const target=$('#articleView');if(!target)return;
+ const slug=new URLSearchParams(location.search).get('id');
+ let article=articles.find(x=>x.slug===slug);
+ if(db){const {data}=await db.from('articles').select('*').eq('slug',slug).eq('published',true).maybeSingle();if(data)article=data}
+ if(article)updateArticleSeo(article);
+ else{document.title='Yazı bulunamadı | Psikolog Beyza Nur Ömültay';setSeoMeta('meta[name="robots"]','noindex,nofollow')}
+ target.innerHTML=article?'<a class="article-back" href="index.html#yazilar">← Tüm yazılara dön</a><div class="card-tag">'+esc(article.category)+' · '+esc(article.date||'Yeni yazı')+'</div><h1>'+esc(article.title)+'</h1><p class="muted article-description">'+esc(article.description)+'</p>'+sourceBlock(article)+(article.image_url?'<img class="article-hero" src="'+esc(article.image_url)+'" alt="'+esc(article.title)+'" fetchpriority="high">':'')+'<div class="article-body">'+esc(article.body||article.description)+'</div>'+sourceBlock(article)+'<a class="article-back" href="index.html#yazilar">← Tüm yazılara dön</a>':'<a class="article-back" href="index.html#yazilar">← Tüm yazılara dön</a><h1>Bu yazı bulunamadı</h1>';
+ document.querySelectorAll('.year').forEach(x=>x.textContent=new Date().getFullYear())
+}
 
 function slugify(text){return text.toLocaleLowerCase('tr').replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
 async function ensureAdminStorageAccess(){const {data:current,error:sessionError}=await db.auth.getSession();let session=current?.session;if(sessionError)return{ok:false,message:'Oturum doğrulanamadı. İçerik Masası’ndan çıkış yapıp yeniden giriş yap.'};if(!session||!session.expires_at||session.expires_at*1000<Date.now()+60000){const {data:refreshed,error:refreshError}=await db.auth.refreshSession();session=refreshed?.session;if(refreshError||!session)return{ok:false,message:'Yönetici oturumun yenilenemedi. İçerik Masası’ndan çıkış yapıp yeniden giriş yap.'}}const {data:admin,error:adminError}=await db.from('site_admins').select('user_id').eq('user_id',session.user.id).maybeSingle();if(adminError||!admin)return{ok:false,message:'Bu oturum yönetici hesabına bağlı değil. İçerik Masası’ndan çıkış yapıp yönetici hesabınla yeniden giriş yap.'};return{ok:true}}

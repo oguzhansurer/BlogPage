@@ -119,39 +119,52 @@ function storyWrap(ctx,text,x,y,maxWidth,lineHeight,maxLines){
  lines.forEach((value,index)=>ctx.fillText(value,x,y+index*lineHeight));
  return y+lines.length*lineHeight
 }
+function drawStoryLogo(ctx,x,y,size){
+ const r=size/2,g=ctx.createRadialGradient(x-size*.18,y-size*.22,2,x,y,r);
+ g.addColorStop(0,'#8b2945');g.addColorStop(.52,'#650d2b');g.addColorStop(1,'#350614');
+ ctx.save();ctx.shadowColor='rgba(219,105,138,.66)';ctx.shadowBlur=18;
+ ctx.fillStyle=g;ctx.strokeStyle='rgba(245,211,218,.78)';ctx.lineWidth=2;
+ ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();
+ ctx.strokeStyle='#fff0d8';ctx.lineWidth=3;ctx.lineCap='round';ctx.lineJoin='round';
+ ctx.beginPath();ctx.arc(x,y-size*.11,size*.16,0,Math.PI*2);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(x-size*.29,y+size*.27);ctx.bezierCurveTo(x-size*.22,y+size*.03,x+size*.22,y+size*.03,x+size*.29,y+size*.27);ctx.stroke();
+ ctx.fillStyle='#fff0d8';ctx.beginPath();ctx.moveTo(x+size*.32,y-size*.34);ctx.lineTo(x+size*.35,y-size*.23);ctx.lineTo(x+size*.46,y-size*.20);ctx.lineTo(x+size*.35,y-size*.16);ctx.lineTo(x+size*.32,y-size*.05);ctx.lineTo(x+size*.29,y-size*.16);ctx.lineTo(x+size*.18,y-size*.20);ctx.lineTo(x+size*.29,y-size*.23);ctx.closePath();ctx.fill()
+}
 async function createStoryBlob(article){
  await document.fonts.ready;
  const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1920;
- const ctx=canvas.getContext('2d');const imageUrl=safeExternalUrl(article.image_url);
- const image=await storyLoadImage(imageUrl);
- const bg=ctx.createLinearGradient(0,0,1080,1920);bg.addColorStop(0,'#38202c');bg.addColorStop(.55,'#160f15');bg.addColorStop(1,'#3d1b2b');ctx.fillStyle=bg;ctx.fillRect(0,0,1080,1920);
- if(image){ctx.save();ctx.filter='blur(34px) brightness(.33) saturate(.78)';storyCover(ctx,image,-55,-55,1190,2030,0);ctx.restore()}
- const veil=ctx.createLinearGradient(0,0,0,1920);veil.addColorStop(0,'rgba(17,10,16,.55)');veil.addColorStop(.55,'rgba(17,10,16,.7)');veil.addColorStop(1,'rgba(17,10,16,.88)');ctx.fillStyle=veil;ctx.fillRect(0,0,1080,1920);
- ctx.save();ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=44;ctx.fillStyle='rgba(37,19,29,.78)';ctx.beginPath();ctx.roundRect(58,88,964,1744,34);ctx.fill();ctx.restore();
- ctx.strokeStyle='rgba(239,180,192,.5)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(58,88,964,1744,34);ctx.stroke();
- ctx.fillStyle='#f6dce2';ctx.font='700 47px "Cormorant Garamond",Georgia,serif';ctx.fillText('H.P.R',104,169);
- ctx.textAlign='right';ctx.fillStyle='#d8a0ad';ctx.font='600 22px "DM Sans",Arial,sans-serif';ctx.fillText('PSİKOLOG BEYZA NUR ÖMÜLTAY',974,158);ctx.textAlign='left';
- ctx.strokeStyle='rgba(239,180,192,.32)';ctx.beginPath();ctx.moveTo(104,204);ctx.lineTo(976,204);ctx.stroke();
- storyCover(ctx,image,104,236,872,754,24);
- const photoShade=ctx.createLinearGradient(0,720,0,990);photoShade.addColorStop(0,'rgba(25,12,19,0)');photoShade.addColorStop(1,'rgba(25,12,19,.6)');ctx.fillStyle=photoShade;ctx.fillRect(104,720,872,270);
- ctx.fillStyle='#edb6c4';ctx.font='600 22px "DM Sans",Arial,sans-serif';ctx.fillText(String(article.category|| (article.is_short?'KISA NOT':'PSİKOLOJİ')).toLocaleUpperCase('tr-TR'),112,1041);
- ctx.fillStyle='#fff5f1';ctx.font='500 66px "Playfair Display",Georgia,serif';
- const titleEnd=storyWrap(ctx,article.title,108,1134,860,78,3);
- ctx.fillStyle='#e1cdd1';ctx.font='400 34px "DM Sans",Arial,sans-serif';
- storyWrap(ctx,article.description||article.body||'',108,titleEnd+36,858,49,4);
- ctx.strokeStyle='rgba(239,180,192,.35)';ctx.beginPath();ctx.moveTo(108,1652);ctx.lineTo(972,1652);ctx.stroke();
- ctx.fillStyle='#d9a8b4';ctx.font='500 22px "DM Sans",Arial,sans-serif';ctx.fillText(storyFormatDate(article),108,1704);
- ctx.fillStyle='#fff5f1';ctx.font='500 27px "Playfair Display",Georgia,serif';ctx.fillText('Psikolog Beyza Nur Ömültay',108,1760);
- ctx.textAlign='right';ctx.fillStyle='#d7a0ad';ctx.font='500 20px "DM Sans",Arial,sans-serif';ctx.fillText('Kendine şefkatle pırıltılandır.',972,1760);ctx.textAlign='left';
+ const ctx=canvas.getContext('2d'),imageUrl=safeExternalUrl(article.image_url),image=await storyLoadImage(imageUrl);
+ const base=ctx.createLinearGradient(0,0,1080,1920);base.addColorStop(0,'#321c29');base.addColorStop(.55,'#160f15');base.addColorStop(1,'#3b1b2b');ctx.fillStyle=base;ctx.fillRect(0,0,1080,1920);
+ if(image){ctx.save();ctx.filter='blur(42px) brightness(.48) saturate(.78)';storyCover(ctx,image,-75,-75,1230,2070,0);ctx.restore()}
+ const shade=ctx.createLinearGradient(0,0,0,1920);shade.addColorStop(0,'rgba(18,10,16,.38)');shade.addColorStop(.38,'rgba(18,10,16,.26)');shade.addColorStop(.68,'rgba(18,10,16,.50)');shade.addColorStop(1,'rgba(15,8,14,.66)');ctx.fillStyle=shade;ctx.fillRect(0,0,1080,1920);
+ const vignette=ctx.createRadialGradient(540,850,280,540,850,1060);vignette.addColorStop(0,'rgba(8,5,10,0)');vignette.addColorStop(1,'rgba(8,5,10,.42)');ctx.fillStyle=vignette;ctx.fillRect(0,0,1080,1920);
+ drawStoryLogo(ctx,142,135,86);
+ ctx.textAlign='left';ctx.fillStyle='#e4bac5';ctx.font='600 18px "DM Sans",Arial,sans-serif';ctx.fillText('PSİKOLOG',202,124);
+ ctx.fillStyle='#fff5f1';ctx.font='500 30px "Playfair Display",Georgia,serif';ctx.fillText('Beyza Nur Ömültay',202,164);
+ ctx.textAlign='center';ctx.fillStyle='#f0c0cb';ctx.font='600 22px "DM Sans",Arial,sans-serif';
+ ctx.fillText(String(article.category||(article.is_short?'KISA NOT':'PSİKOLOJİ')).toLocaleUpperCase('tr-TR'),540,765,900);
+ ctx.fillStyle='rgba(255,240,241,.82)';ctx.fillRect(420,800,240,2);
+ const title=String(article.title||'');
+ let titleSize=76;ctx.fillStyle='#fff8f5';ctx.textAlign='center';ctx.shadowColor='rgba(10,5,10,.74)';ctx.shadowBlur=20;ctx.shadowOffsetY=5;
+ ctx.font='500 '+titleSize+'px "Playfair Display",Georgia,serif';
+ while(ctx.measureText(title).width>900&&titleSize>26){titleSize-=2;ctx.font='500 '+titleSize+'px "Playfair Display",Georgia,serif'}
+ ctx.fillText(title,540,892,900);ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+ ctx.fillStyle='#fff4f1';ctx.font='400 36px "DM Sans",Arial,sans-serif';
+ storyWrap(ctx,article.description||article.body||'',540,976,860,52,7);
+ const date=storyFormatDate(article);
+ ctx.textAlign='left';ctx.strokeStyle='rgba(255,240,241,.62)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(104,1635);ctx.lineTo(976,1635);ctx.stroke();
+ ctx.fillStyle='#f0c2ce';ctx.font='500 23px "DM Sans",Arial,sans-serif';ctx.fillText(date,106,1694);
+ ctx.fillStyle='#fff7f4';ctx.font='500 31px "Playfair Display",Georgia,serif';ctx.fillText('Psikolog Beyza Nur Ömültay',106,1752,700);
+ ctx.textAlign='right';ctx.fillStyle='#f3d5dc';ctx.font='700 38px "Cormorant Garamond",Georgia,serif';ctx.shadowColor='rgba(238,157,178,.62)';ctx.shadowBlur=16;ctx.fillText('H.P.R',975,1810);ctx.shadowBlur=0;ctx.textAlign='left';
  return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve({blob,imageIncluded:!!image}):reject(new Error('Story görseli oluşturulamadı.')),'image/png'))
 }
 function initStoryMode(){
- let current=null,opener=null,currentBlob=null,currentName='hikaye';
+ let current=null,opener=null,currentBlob=null,currentName='hikaye',previewUrl=null,renderId=0;
  const modal=document.createElement('div');modal.className='story-modal';modal.id='storyModal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','storyPreviewTitle');
- modal.innerHTML='<div class="story-modal-backdrop" data-story-close></div><div class="story-modal-panel"><button class="story-close" type="button" aria-label="Hikâye önizlemesini kapat">×</button><div class="story-modal-stage"><article class="story-poster"><div class="story-poster-backdrop" id="storyPosterBackdrop"></div><div class="story-poster-card"><div class="story-poster-top"><span>H.P.R</span><small>Psikolog Beyza Nur Ömültay</small></div><div class="story-poster-cover"><img id="storyPosterImage" alt="" hidden><span id="storyPosterPlaceholder" aria-hidden="true">✦</span></div><div class="story-poster-copy"><span class="story-poster-category" id="storyPosterCategory"></span><h2 id="storyPreviewTitle"></h2><p id="storyPreviewDescription"></p></div><div class="story-poster-footer"><span id="storyPosterDate"></span><strong>Psikolog Beyza Nur Ömültay</strong><small>Kendine şefkatle pırıltılandır.</small></div></div></article></div><div class="story-modal-actions"><button class="btn fill" id="storyDownload" type="button" disabled>Görseli indir ↧</button><button class="btn" id="storyShare" type="button" disabled>Telefonda paylaş ↗</button><p id="storyStatus" role="status" aria-live="polite"></p></div></div>';
+ modal.innerHTML='<div class="story-modal-backdrop" data-story-close></div><div class="story-modal-panel"><button class="story-close" type="button" aria-label="Hikâye önizlemesini kapat">×</button><div class="story-modal-stage"><img class="story-poster-preview" id="storyCanvasPreview" alt="" aria-describedby="storyStatus"></div><div class="story-modal-actions"><button class="btn fill" id="storyDownload" type="button" disabled>Görseli indir ↧</button><button class="btn" id="storyShare" type="button" disabled>Telefonda paylaş ↗</button><p id="storyStatus" role="status" aria-live="polite"></p></div></div>';
  document.body.appendChild(modal);
  const downloadBlob=(blob,name)=>{const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=name+'.png';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)};
- const close=()=>{modal.hidden=true;document.body.classList.remove('story-open');currentBlob=null;if(opener&&opener.isConnected)opener.focus()};
+ const close=()=>{modal.hidden=true;document.body.classList.remove('story-open');currentBlob=null;renderId++;if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null}const preview=modal.querySelector('#storyCanvasPreview');preview.removeAttribute('src');if(opener&&opener.isConnected)opener.focus()};
  modal.querySelector('.story-close').addEventListener('click',close);
  modal.querySelector('[data-story-close]').addEventListener('click',close);
  modal.addEventListener('keydown',event=>{
@@ -161,22 +174,16 @@ function initStoryMode(){
  document.addEventListener('click',event=>{
   const button=event.target.closest('[data-story-open]');if(!button)return;
   event.preventDefault();event.stopPropagation();const article=storyItems.get(button.dataset.storyOpen);if(!article)return;
-  opener=button;current=article;currentBlob=null;currentName=String(article.slug||'hikaye').replace(/[^a-z0-9-]/gi,'-');
-  const image=safeExternalUrl(article.image_url),poster=modal.querySelector('.story-poster'),posterImage=modal.querySelector('#storyPosterImage');
-  poster.style.setProperty('--story-image',image?'url("'+image.replace(/["\\]/g,'')+'")':'none');
-  if(image){posterImage.src=image;posterImage.hidden=false;modal.querySelector('#storyPosterPlaceholder').hidden=true}else{posterImage.removeAttribute('src');posterImage.hidden=true;modal.querySelector('#storyPosterPlaceholder').hidden=false}
-  modal.querySelector('#storyPosterCategory').textContent=article.category||(article.is_short?'Kısa not':'Psikoloji');
-  modal.querySelector('#storyPreviewTitle').textContent=article.title||'';
-  modal.querySelector('#storyPreviewDescription').textContent=article.description||article.body||'';
-  modal.querySelector('#storyPosterDate').textContent=storyFormatDate(article);
-  const status=modal.querySelector('#storyStatus'),downloadButton=modal.querySelector('#storyDownload'),shareButton=modal.querySelector('#storyShare');
+  opener=button;current=article;currentBlob=null;const task=++renderId;currentName=String(article.slug||'hikaye').replace(/[^a-z0-9-]/gi,'-');
+  const status=modal.querySelector('#storyStatus'),downloadButton=modal.querySelector('#storyDownload'),shareButton=modal.querySelector('#storyShare'),preview=modal.querySelector('#storyCanvasPreview');
   status.textContent='9:16 hikâye görseli hazırlanıyor…';downloadButton.disabled=true;shareButton.disabled=true;
   modal.hidden=false;document.body.classList.add('story-open');modal.querySelector('.story-close').focus();
   createStoryBlob(article).then(result=>{
-   if(current!==article||modal.hidden)return;
-   currentBlob=result.blob;downloadButton.disabled=false;shareButton.disabled=false;
-   status.textContent=result.imageIncluded?'Instagram Hikâyesi için 1080 × 1920 görsel hazır.':'Kapak görseli alınamadı; yazı görseli arka plan dokusuyla hazırlandı.'
-  }).catch(()=>{if(current===article&&!modal.hidden)status.textContent='Hikâye görseli hazırlanamadı. Tekrar deneyebilirsin.'})
+   if(task!==renderId||modal.hidden)return;
+   currentBlob=result.blob;previewUrl=URL.createObjectURL(result.blob);preview.src=previewUrl;preview.alt=article.title+' başlıklı 1080 × 1920 Instagram hikâye görseli';
+   downloadButton.disabled=false;shareButton.disabled=false;
+   status.textContent=result.imageIncluded?'Görsel hazır. Önizleme indirilecek PNG ile aynıdır.':'Kapak görseli alınamadı; tasarım bulanık bordo arka planla hazırlandı.'
+  }).catch(()=>{if(task===renderId&&!modal.hidden)status.textContent='Hikâye görseli hazırlanamadı. Tekrar deneyebilirsin.'})
  });
  modal.querySelector('#storyDownload').addEventListener('click',()=>{
   if(!currentBlob)return;

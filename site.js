@@ -32,7 +32,7 @@ function renderCvItems(items,type){return items.length?'<ul class="cv-items">'+i
 function setSeoMeta(selector,value){const element=$(selector);if(element&&value)element.setAttribute('content',value)}
 function updateArticleSeo(article){
  const title=article.title+' | Psikolog Beyza Nur Ömültay';
- const description=String(article.description||article.body||'').replace(/\\s+/g,' ').trim().slice(0,160);
+ const description=String(article.description||article.body||'').replace(/\s+/g,' ').trim().slice(0,160);
  const canonical='https://beyza-nur-blog.vercel.app/makale.html?id='+encodeURIComponent(article.slug);
  const image=safeExternalUrl(article.image_url);
  document.title=title;

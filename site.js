@@ -13,14 +13,22 @@ const demoProfile={about:'Psikoloji, insanın kendisiyle ve çevresiyle kurduğu
 const config=window.SUPABASE_CONFIG||{};
 const configured=!!(window.supabase?.createClient&&config.url&&config.publishableKey&&!config.url.includes('PASTE_')&&!config.publishableKey.includes('PASTE_'));
 const db=configured?window.supabase.createClient(config.url,config.publishableKey):null;
-let articles=demoArticles,profile=demoProfile;
+let articles=demoArticles,profile=demoProfile;const storyItems=new Map();
 
 async function readProfile(){if(!db){console.warn('Supabase bağlantısı kurulamadı.');return demoProfile}const {data,error}=await db.from('site_profile').select('*').eq('id',1).maybeSingle();if(error||!data){console.warn('Site profili alınamadı.',error?.message||'Profil satırı yok.');return demoProfile}return data}
 async function readArticles(limit){let list;if(!db)list=demoArticles;else{let query=db.from('articles').select('*').eq('published',true).eq('is_short',false).order('created_at',{ascending:false});if(Number.isInteger(limit))query=query.limit(limit);const {data,error}=await query;list=error||!data?demoArticles:data}return Number.isInteger(limit)?list.slice(0,limit):list}
 async function readShortPosts(){if(!db)return [];const {data,error}=await db.from('articles').select('*').eq('published',true).eq('is_short',true).order('created_at',{ascending:false});return error||!data?[]:data}
-function renderShortPosts(posts){const target=$('#shortPostCards');if(!target)return;target.innerHTML=posts.length?posts.map(a=>'<a class="card short-card" href="makale.html?id='+encodeURIComponent(a.slug)+'">'+(a.image_url?'<img class="card-cover" src="'+esc(a.image_url)+'" alt="Kapak görseli: '+esc(a.title)+'" loading="lazy">':'<div class="card-cover-placeholder">✳</div>')+'<div class="card-content"><div class="card-tag">'+esc(a.category)+' · '+esc(a.created_at?new Date(a.created_at).toLocaleDateString("tr-TR"):"Kısa not")+'</div><h2>'+esc(a.title)+'</h2><p>'+esc(a.description||a.body)+'</p><span class="readmore">NOTU OKU ↗</span></div></a>').join(''):'<div class="short-empty"><span class="eyebrow">Kısa notlar</span><p>Henüz kısa not yayınlanmadı. Yeni bir kısa not eklendiğinde burada görünecek.</p></div>'}
+function storyAction(article){storyItems.set(String(article.slug),article);return '<button type="button" class="story-trigger" data-story-open="'+esc(article.slug)+'" aria-label="'+esc(article.title)+' için hikâye görseli hazırla"><span aria-hidden="true">✦</span> Hikâye görselini hazırla</button>'}
+function renderShortPosts(posts){
+ const target=$('#shortPostCards');if(!target)return;
+ posts.forEach(a=>storyItems.set(String(a.slug),a));
+ target.innerHTML=posts.length?posts.map(a=>'<article class="card story-card short-card"><a class="card-link" href="makale.html?id='+encodeURIComponent(a.slug)+'">'+(a.image_url?'<img class="card-cover" src="'+esc(a.image_url)+'" alt="Kapak görseli: '+esc(a.title)+'" loading="lazy">':'<div class="card-cover-placeholder">✳</div>')+'<div class="card-content"><div class="card-tag">'+esc(a.category)+' · '+esc(a.created_at?new Date(a.created_at).toLocaleDateString("tr-TR"):"Kısa not")+'</div><h2>'+esc(a.title)+'</h2><p>'+esc(a.description||a.body)+'</p><span class="readmore">NOTU OKU ↗</span></div></a>'+storyAction(a)+'</article>').join(''):'<div class="short-empty"><span class="eyebrow">Kısa notlar</span><p>Henüz kısa not yayınlanmadı. Yeni bir kısa not eklendiğinde burada görünecek.</p></div>'
+}
 async function initShortPage(){const target=$('#shortPostCards');if(!target)return;renderShortPosts(await readShortPosts());const year=$('#year');if(year)year.textContent=new Date().getFullYear()}
-function renderCards(targetId='articleCards'){const target=$('#'+targetId);if(!target)return;target.innerHTML=articles.length?articles.map(a=>'<a class="card" href="makale.html?id='+encodeURIComponent(a.slug)+'">'+(a.image_url?'<img class="card-cover" src="'+esc(a.image_url)+'" alt="Kapak görseli: '+esc(a.title)+'" loading="lazy">':'<div class="card-cover-placeholder">✳</div>')+'<div class="card-content"><div class="card-tag">'+esc(a.category)+' · '+esc(a.date||'Yeni yazı')+'</div><h3>'+esc(a.title)+'</h3><p>'+esc(a.description)+'</p><span class="readmore">YAZININ TAMAMINI OKU ↗</span></div></a>').join(''):'<div class="article-empty">Henüz makale yayınlanmadı.</div>'}
+function renderCards(targetId='articleCards'){
+ const target=$('#'+targetId);if(!target)return;
+ target.innerHTML=articles.length?articles.map(a=>'<article class="card story-card"><a class="card-link" href="makale.html?id='+encodeURIComponent(a.slug)+'">'+(a.image_url?'<img class="card-cover" src="'+esc(a.image_url)+'" alt="Kapak görseli: '+esc(a.title)+'" loading="lazy">':'<div class="card-cover-placeholder">✳</div>')+'<div class="card-content"><div class="card-tag">'+esc(a.category)+' · '+esc(a.date||'Yeni yazı')+'</div><h3>'+esc(a.title)+'</h3><p>'+esc(a.description)+'</p><span class="readmore">YAZININ TAMAMINI OKU ↗</span></div></a>'+storyAction(a)+'</article>').join(''):'<div class="article-empty">Henüz makale yayınlanmadı.</div>'
+}
 function renderProfile(){const about=$('#aboutText');if(about)about.innerHTML=String(profile.about||'').split('\n').filter(Boolean).map(p=>'<p>'+esc(p)+'</p>').join('');const education=$('#education');if(education)education.innerHTML=(profile.education||[]).map(x=>'<div class="cv-item"><b>'+esc(x.year||x[0]||'')+'</b><small>'+esc(x.institution||x[1]||'')+'</small></div>').join('');const expertise=$('#expertise');if(expertise)expertise.innerHTML=(profile.expertise||[]).map(x=>'<div class="cv-item"><b>'+esc(x)+'</b></div>').join('');renderContact();renderPortrait()}
 function renderPortrait(){const portrait=$('.portrait'),image=$('#portraitPhoto');if(!portrait||!image)return;const url=String(profile.portrait_url||image.dataset.initialSrc||'').trim();if(!url){portrait.classList.remove('has-photo');image.hidden=true;image.removeAttribute('src');return}image.fetchPriority='high';image.loading='eager';image.decoding='async';image.onload=()=>{image.hidden=false;portrait.classList.add('has-photo')};image.onerror=()=>{image.hidden=true;portrait.classList.remove('has-photo')};if(image.src!==url)image.src=url;if(image.complete&&image.naturalWidth){image.hidden=false;portrait.classList.add('has-photo')}}
 function validLinkedInUrl(value){try{const u=new URL(String(value||''));return ['https:','http:'].includes(u.protocol)&&['linkedin.com','www.linkedin.com'].includes(u.hostname.toLowerCase())&&/^\/(in|company|school)\/[^/]+\/?$/i.test(u.pathname)?u.href:''}catch{return ''}}
@@ -58,9 +66,9 @@ async function initArticle(){
  const slug=new URLSearchParams(location.search).get('id');
  let article=articles.find(x=>x.slug===slug);
  if(db){const {data}=await db.from('articles').select('*').eq('slug',slug).eq('published',true).maybeSingle();if(data)article=data}
- if(article)updateArticleSeo(article);
+ if(article){updateArticleSeo(article);storyItems.set(String(article.slug),article)}
  else{document.title='Yazı bulunamadı | Psikolog Beyza Nur Ömültay';setSeoMeta('meta[name="robots"]','noindex,nofollow')}
- target.innerHTML=article?'<a class="article-back" href="index.html#yazilar">← Tüm yazılara dön</a><div class="card-tag">'+esc(article.category)+' · '+esc(article.date||'Yeni yazı')+'</div><h1>'+esc(article.title)+'</h1><p class="muted article-description">'+esc(article.description)+'</p>'+sourceBlock(article)+(article.image_url?'<img class="article-hero" src="'+esc(article.image_url)+'" alt="'+esc(article.title)+'" fetchpriority="high">':'')+'<div class="article-body">'+esc(article.body||article.description)+'</div>'+sourceBlock(article)+'<a class="article-back" href="index.html#yazilar">← Tüm yazılara dön</a>':'<a class="article-back" href="index.html#yazilar">← Tüm yazılara dön</a><h1>Bu yazı bulunamadı</h1>';
+ target.innerHTML=article?'<a class="article-back" href="index.html#yazilar">← Tüm yazılara dön</a><div class="card-tag">'+esc(article.category)+' · '+esc(article.date||'Yeni yazı')+'</div><h1>'+esc(article.title)+'</h1><p class="muted article-description">'+esc(article.description)+'</p><button type="button" class="btn story-inline-trigger" data-story-open="'+esc(article.slug)+'">✦ Hikâye görselini hazırla</button>'+sourceBlock(article)+(article.image_url?'<img class="article-hero" src="'+esc(article.image_url)+'" alt="'+esc(article.title)+'" fetchpriority="high">':'')+'<div class="article-body">'+esc(article.body||article.description)+'</div>'+sourceBlock(article)+'<a class="article-back" href="index.html#yazilar">← Tüm yazılara dön</a>':'<a class="article-back" href="index.html#yazilar">← Tüm yazılara dön</a><h1>Bu yazı bulunamadı</h1>';
  document.querySelectorAll('.year').forEach(x=>x.textContent=new Date().getFullYear())
 }
 
@@ -79,7 +87,93 @@ function initAdmin(){const login=$('#loginForm');if(!login)return;const loginMsg
  $('#profileForm').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);const status=$('#profileMsg');status.textContent='Bilgiler kaydediliyor…';let cvUrl=profile.cv_pdf_url||null,cvPath=profile.cv_pdf_path||null,portraitUrl=profile.portrait_url||'',portraitPath=profile.portrait_path||'',newPortraitPath='';const portraitFile=f.get('portraitPhoto');if(portraitFile&&portraitFile.size){const allowed={'image/jpeg':'.jpg','image/png':'.png','image/webp':'.webp','image/avif':'.avif'};if(!allowed[portraitFile.type]){status.textContent='JPG, PNG, WebP veya AVIF biçiminde bir fotoğraf seç.';return}if(portraitFile.size>5*1024*1024){status.textContent='Fotoğraf dosyası 5 MB sınırını aşamaz.';return}const access=await ensureAdminStorageAccess();if(!access.ok){status.textContent=access.message;return}newPortraitPath='profile/portrait-'+Date.now()+allowed[portraitFile.type];const {error:portraitError}=await db.storage.from('blog-covers').upload(newPortraitPath,portraitFile,{contentType:portraitFile.type,upsert:false});if(portraitError){status.textContent='Fotoğraf yüklenemedi: '+portraitError.message;return}portraitUrl=db.storage.from('blog-covers').getPublicUrl(newPortraitPath).data.publicUrl+'?v='+Date.now();portraitPath=newPortraitPath}const pdf=f.get('cvPdf');if(pdf&&pdf.size){if(pdf.type!=='application/pdf'){status.textContent='Lütfen PDF dosyası seç.';if(newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);return}if(pdf.size>15*1024*1024){status.textContent='PDF dosyası 15 MB sınırını aşamaz.';if(newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);return}const access=await ensureAdminStorageAccess();if(!access.ok){status.textContent=access.message;if(newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);return}const nextPath='cv/ozgecmis-'+Date.now()+'.pdf';const {error:uploadError}=await db.storage.from('professional-cv').upload(nextPath,pdf,{contentType:'application/pdf',upsert:false});if(uploadError){status.textContent='PDF yüklenemedi: '+uploadError.message;if(newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);return}cvUrl=db.storage.from('professional-cv').getPublicUrl(nextPath).data.publicUrl;cvPath=nextPath}const values={id:1,about:f.get('about'),education:f.get('education').split('\n').filter(Boolean).map(line=>{const [year,...rest]=line.split('|').map(x=>x.trim());return{year:year||'',institution:rest.join(' | ')}}),expertise:f.get('expertise').split('\n').map(x=>x.trim()).filter(Boolean),contact_email:f.get('contactEmail').trim(),instagram_url:f.get('instagramUrl').trim(),linkedin_url:validLinkedInUrl(f.get('linkedinUrl').trim()),cv_pdf_url:cvUrl,cv_pdf_path:cvPath,portrait_url:portraitUrl,portrait_path:portraitPath,updated_at:new Date().toISOString()};const {error}=await db.from('site_profile').upsert(values,{onConflict:'id'});if(error&&newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);status.textContent=error?'Bilgiler kaydedilemedi: '+error.message:'Bilgiler ve özgeçmiş PDF kaydedildi.';if(!error){if(profile.portrait_path&&portraitPath!==profile.portrait_path)await db.storage.from('blog-covers').remove([profile.portrait_path]);if(profile.cv_pdf_path&&cvPath!==profile.cv_pdf_path)await db.storage.from('professional-cv').remove([profile.cv_pdf_path]);await loadAdmin()}};
  $('#logout').onclick=async()=>{await db.auth.signOut();location.reload()};
 }
-initHome();initArticlesPage();initArticle();initCvPage();initShortPage();initAdmin();initParallax();initAdminBar();
+initHome();initArticlesPage();initArticle();initCvPage();initShortPage();initAdmin();initParallax();initAdminBar();initStoryMode();
+function storyFormatDate(article){
+ const value=article.created_at||article.updated_at;
+ if(!value)return 'Yayındaki bir yazı';
+ const date=new Date(value);return Number.isNaN(date.getTime())?'Yayındaki bir yazı':date.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'})
+}
+function storyLoadImage(url){
+ return new Promise(resolve=>{
+  if(!url){resolve(null);return}
+  const image=new Image();image.crossOrigin='anonymous';let settled=false;
+  const finish=value=>{if(settled)return;settled=true;resolve(value)};
+  image.onload=()=>finish(image);image.onerror=()=>finish(null);
+  const timeout=setTimeout(()=>finish(null),8000);
+  image.onload=()=>{clearTimeout(timeout);finish(image)};
+  image.onerror=()=>{clearTimeout(timeout);finish(null)};
+  image.src=url;if(image.complete&&image.naturalWidth){clearTimeout(timeout);finish(image)}
+ })
+}
+function storyCover(ctx,image,x,y,w,h,radius){
+ ctx.save();ctx.beginPath();ctx.roundRect(x,y,w,h,radius);ctx.clip();
+ if(image){const scale=Math.max(w/image.width,h/image.height),sw=w/scale,sh=h/scale,sx=(image.width-sw)/2,sy=(image.height-sh)/2;ctx.drawImage(image,sx,sy,sw,sh,x,y,w,h)}
+ else{const g=ctx.createLinearGradient(x,y,x+w,y+h);g.addColorStop(0,'#603044');g.addColorStop(1,'#21151e');ctx.fillStyle=g;ctx.fillRect(x,y,w,h);ctx.fillStyle='rgba(255,236,227,.42)';ctx.font='64px Georgia';ctx.fillText('✦',x+w/2-20,y+h/2+20)}
+ ctx.restore()
+}
+function storyWrap(ctx,text,x,y,maxWidth,lineHeight,maxLines){
+ const words=String(text||'').replace(/\\s+/g,' ').trim().split(' ').filter(Boolean);let lines=[],line='';
+ words.forEach(word=>{const next=line?line+' '+word:word;if(ctx.measureText(next).width>maxWidth&&line){lines.push(line);line=word}else line=next});
+ if(line)lines.push(line);
+ const clipped=lines.length>maxLines;if(clipped)lines=lines.slice(0,maxLines);
+ if(clipped&&lines.length){let last=lines[lines.length-1];while(last&&ctx.measureText(last+'…').width>maxWidth)last=last.slice(0,-1);lines[lines.length-1]=last.trimEnd()+'…'}
+ lines.forEach((value,index)=>ctx.fillText(value,x,y+index*lineHeight));
+ return y+lines.length*lineHeight
+}
+async function createStoryBlob(article){
+ await document.fonts.ready;
+ const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1920;
+ const ctx=canvas.getContext('2d');const imageUrl=safeExternalUrl(article.image_url);
+ const image=await storyLoadImage(imageUrl);
+ const bg=ctx.createLinearGradient(0,0,1080,1920);bg.addColorStop(0,'#38202c');bg.addColorStop(.55,'#160f15');bg.addColorStop(1,'#3d1b2b');ctx.fillStyle=bg;ctx.fillRect(0,0,1080,1920);
+ if(image){ctx.save();ctx.filter='blur(34px) brightness(.33) saturate(.78)';storyCover(ctx,image,-55,-55,1190,2030,0);ctx.restore()}
+ const veil=ctx.createLinearGradient(0,0,0,1920);veil.addColorStop(0,'rgba(17,10,16,.55)');veil.addColorStop(.55,'rgba(17,10,16,.7)');veil.addColorStop(1,'rgba(17,10,16,.88)');ctx.fillStyle=veil;ctx.fillRect(0,0,1080,1920);
+ ctx.save();ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=44;ctx.fillStyle='rgba(37,19,29,.78)';ctx.beginPath();ctx.roundRect(58,88,964,1744,34);ctx.fill();ctx.restore();
+ ctx.strokeStyle='rgba(239,180,192,.5)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(58,88,964,1744,34);ctx.stroke();
+ ctx.fillStyle='#f6dce2';ctx.font='700 47px "Cormorant Garamond",Georgia,serif';ctx.fillText('H.P.R',104,169);
+ ctx.textAlign='right';ctx.fillStyle='#d8a0ad';ctx.font='600 22px "DM Sans",Arial,sans-serif';ctx.fillText('PSİKOLOG BEYZA NUR ÖMÜLTAY',974,158);ctx.textAlign='left';
+ ctx.strokeStyle='rgba(239,180,192,.32)';ctx.beginPath();ctx.moveTo(104,204);ctx.lineTo(976,204);ctx.stroke();
+ storyCover(ctx,image,104,236,872,754,24);
+ const photoShade=ctx.createLinearGradient(0,720,0,990);photoShade.addColorStop(0,'rgba(25,12,19,0)');photoShade.addColorStop(1,'rgba(25,12,19,.6)');ctx.fillStyle=photoShade;ctx.fillRect(104,720,872,270);
+ ctx.fillStyle='#edb6c4';ctx.font='600 22px "DM Sans",Arial,sans-serif';ctx.fillText(String(article.category|| (article.is_short?'KISA NOT':'PSİKOLOJİ')).toLocaleUpperCase('tr-TR'),112,1041);
+ ctx.fillStyle='#fff5f1';ctx.font='500 66px "Playfair Display",Georgia,serif';
+ const titleEnd=storyWrap(ctx,article.title,108,1134,860,78,3);
+ ctx.fillStyle='#e1cdd1';ctx.font='400 34px "DM Sans",Arial,sans-serif';
+ storyWrap(ctx,article.description||article.body||'',108,titleEnd+36,858,49,4);
+ ctx.strokeStyle='rgba(239,180,192,.35)';ctx.beginPath();ctx.moveTo(108,1652);ctx.lineTo(972,1652);ctx.stroke();
+ ctx.fillStyle='#d9a8b4';ctx.font='500 22px "DM Sans",Arial,sans-serif';ctx.fillText(storyFormatDate(article),108,1704);
+ ctx.fillStyle='#fff5f1';ctx.font='500 27px "Playfair Display",Georgia,serif';ctx.fillText('Psikolog Beyza Nur Ömültay',108,1760);
+ ctx.textAlign='right';ctx.fillStyle='#d7a0ad';ctx.font='500 20px "DM Sans",Arial,sans-serif';ctx.fillText('Kendine şefkatle pırıltılandır.',972,1760);ctx.textAlign='left';
+ return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve({blob,imageIncluded:!!image}):reject(new Error('Story görseli oluşturulamadı.')),'image/png'))
+}
+function initStoryMode(){
+ let current=null,opener=null,currentBlob=null,currentName='hikaye';
+ const modal=document.createElement('div');modal.className='story-modal';modal.id='storyModal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','storyPreviewTitle');
+ modal.innerHTML='<div class="story-modal-backdrop" data-story-close></div><div class="story-modal-panel"><button class="story-close" type="button" aria-label="Hikâye önizlemesini kapat">×</button><div class="story-modal-stage"><article class="story-poster"><div class="story-poster-backdrop" id="storyPosterBackdrop"></div><div class="story-poster-card"><div class="story-poster-top"><span>H.P.R</span><small>Psikolog Beyza Nur Ömültay</small></div><div class="story-poster-cover"><img id="storyPosterImage" alt="" hidden><span id="storyPosterPlaceholder" aria-hidden="true">✦</span></div><div class="story-poster-copy"><span class="story-poster-category" id="storyPosterCategory"></span><h2 id="storyPreviewTitle"></h2><p id="storyPreviewDescription"></p></div><div class="story-poster-footer"><span id="storyPosterDate"></span><strong>Psikolog Beyza Nur Ömültay</strong><small>Kendine şefkatle pırıltılandır.</small></div></div></article></div><div class="story-modal-actions"><button class="btn fill" id="storyDownload" type="button">Görseli indir ↧</button><button class="btn" id="storyShare" type="button">Telefonda paylaş ↗</button><p id="storyStatus" role="status" aria-live="polite"></p></div></div>';
+ document.body.appendChild(modal);
+ const close=()=>{modal.hidden=true;document.body.classList.remove('story-open');currentBlob=null;if(opener&&opener.isConnected)opener.focus()};
+ modal.querySelector('.story-close').addEventListener('click',close);
+ modal.querySelector('[data-story-close]').addEventListener('click',close);
+ modal.addEventListener('keydown',event=>{if(event.key==='Escape')close()});
+ document.addEventListener('click',event=>{
+  const button=event.target.closest('[data-story-open]');if(!button)return;
+  event.preventDefault();event.stopPropagation();const article=storyItems.get(button.dataset.storyOpen);if(!article)return;
+  opener=button;current=article;currentBlob=null;currentName=String(article.slug||'hikaye').replace(/[^a-z0-9-]/gi,'-');
+  const image=safeExternalUrl(article.image_url),poster=modal.querySelector('.story-poster'),posterImage=modal.querySelector('#storyPosterImage');
+  poster.style.setProperty('--story-image',image?'url("'+image.replace(/["\\]/g,'')+'")':'none');
+  if(image){posterImage.src=image;posterImage.hidden=false;modal.querySelector('#storyPosterPlaceholder').hidden=true}else{posterImage.removeAttribute('src');posterImage.hidden=true;modal.querySelector('#storyPosterPlaceholder').hidden=false}
+  modal.querySelector('#storyPosterCategory').textContent=article.category||(article.is_short?'Kısa not':'Psikoloji');
+  modal.querySelector('#storyPreviewTitle').textContent=article.title||'';
+  modal.querySelector('#storyPreviewDescription').textContent=article.description||article.body||'';
+  modal.querySelector('#storyPosterDate').textContent=storyFormatDate(article);
+  modal.querySelector('#storyStatus').textContent='';
+  modal.hidden=false;document.body.classList.add('story-open');modal.querySelector('.story-close').focus()
+ });
+ const download=async()=>{if(!current)return null;const status=modal.querySelector('#storyStatus');status.textContent='1080 × 1920 görsel hazırlanıyor…';const result=await createStoryBlob(current);currentBlob=result.blob;const file=new File([result.blob],currentName+'.png',{type:'image/png'});if(!result.imageIncluded)status.textContent='Kapak görseli dış kaynağa kapalı olduğu için tasarımda kullanılamadı; görselsiz arka planla hazırlandı.';else status.textContent='Instagram hikâyesi için görsel hazır.';return file};
+ modal.querySelector('#storyDownload').addEventListener('click',async()=>{try{const file=await download();if(!file)return;const url=URL.createObjectURL(file);const link=document.createElement('a');link.href=url;link.download=file.name;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}catch(error){modal.querySelector('#storyStatus').textContent='Görsel oluşturulamadı. Tekrar deneyebilirsin.'}});
+ modal.querySelector('#storyShare').addEventListener('click',async()=>{try{const file=await download();if(!file)return;if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:current.title,text:'Psikolog Beyza Nur Ömültay’dan: '+current.title})}else{const url=URL.createObjectURL(file);const link=document.createElement('a');link.href=url;link.download=file.name;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);modal.querySelector('#storyStatus').textContent='Görsel indirildi. Instagram’da Hikâye oluşturup galerinden seçebilirsin.'}}catch(error){if(error.name!=='AbortError')modal.querySelector('#storyStatus').textContent='Paylaşım açılamadı. Görseli indirip Instagram’dan ekleyebilirsin.'}});
+}
+
 function initAdminBar(){const bar=$('.adminbar');if(!bar)return;let last=window.scrollY,frame=0;const onScroll=()=>{if(frame)return;frame=requestAnimationFrame(()=>{const y=window.scrollY,down=y>last;bar.classList.toggle('adminbar-hidden',down&&y>80);bar.classList.toggle('adminbar-visible',!down||y<=80);last=y;frame=0})};bar.classList.add('adminbar-visible');window.addEventListener('scroll',onScroll,{passive:true})}
 function initParallax(){const scene=$('.parallax-scene');if(!scene||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;const objects=scene.querySelectorAll('[data-depth]');let frame=0;const update=()=>{frame=0;const main=$('main'),scroll=Math.max(0,window.scrollY-main.offsetTop);objects.forEach(item=>{const depth=Number(item.dataset.depth)||.5;item.style.setProperty('--parallax-y',(scroll*(1-depth)).toFixed(1)+'px')})};window.addEventListener('scroll',()=>{if(!frame)frame=requestAnimationFrame(update)},{passive:true});update()}
 })();

@@ -252,3 +252,13 @@ body{background:radial-gradient(ellipse at 14% 2%,rgba(143,35,65,.24),transparen
 body.story-open{overflow:hidden}
 @media(max-width:600px){.story-modal{padding:10px}.story-modal-panel{gap:10px}.story-modal-stage{max-height:calc(100dvh - 136px)}.story-poster{width:min(80vw,calc((100dvh - 136px)*.5625));max-height:calc(100dvh - 136px);border-radius:16px}.story-poster-card{border-radius:14px}.story-close{top:2px;right:2px;width:36px;height:36px;font-size:25px}.story-modal-actions .btn{padding:8px 11px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.story-trigger{transition:none}}
+
+/* Story preview mirrors the exact canvas PNG prepared for download and sharing. */
+.story-modal-panel{width:min(100%,740px);align-items:stretch;gap:12px}
+.story-modal-stage{width:100%;height:min(78dvh,calc(100dvh - 166px),800px);max-height:calc(100dvh - 166px);display:flex;align-items:center;justify-content:center}
+.story-poster-preview{display:block;width:auto;height:min(78dvh,calc(100dvh - 166px),800px);max-width:100%;aspect-ratio:9/16;object-fit:contain;margin:auto;border:1px solid rgba(245,213,220,.62);border-radius:10px;box-shadow:0 24px 72px rgba(0,0,0,.58),0 0 32px rgba(168,57,92,.18)}
+.story-modal-actions{justify-content:flex-end}
+.story-modal-actions p{order:3;text-align:right}
+.story-modal-actions .btn:disabled{opacity:.52;cursor:wait}
+.story-close{top:2px;right:2px}
+@media(max-width:600px){.story-modal-panel{gap:8px}.story-modal-stage{height:min(78dvh,calc(100dvh - 136px));max-height:calc(100dvh - 136px)}.story-poster-preview{height:min(78dvh,calc(100dvh - 136px));max-height:calc(100dvh - 136px);border-radius:8px}.story-modal-actions{gap:8px}.story-modal-actions .btn{font-size:10px;padding:8px 11px}}

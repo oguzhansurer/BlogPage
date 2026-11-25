@@ -210,3 +210,5 @@ body{background:radial-gradient(ellipse at 14% 2%,rgba(143,35,65,.24),transparen
 
 /* Match the about quote to its adjacent label. */
 .about .quote{color:#84435a}
+
+.article-description{font-size:17px}

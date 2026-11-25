@@ -4,7 +4,7 @@ Bordo tonlarında çok sayfalı psikoloji blogu. Statik HTML/CSS/JavaScript ön 
 
 ## Yayındaki site ve yönetim paneli
 
-- Site: https://beyza-nur-blog.vercel.app
+- Site: https://pskbeyzaomultay.com/index.html
 - İçerik masası: https://beyza-nur-blog.vercel.app/icerik-masasi.html
 - Supabase projesi: https://supabase.com/dashboard/project/vcpktnjgvmhxucwwhame
 

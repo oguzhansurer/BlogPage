@@ -98,7 +98,6 @@ function storyLoadImage(url){
   if(!url){resolve(null);return}
   const image=new Image();image.crossOrigin='anonymous';let settled=false;
   const finish=value=>{if(settled)return;settled=true;resolve(value)};
-  image.onload=()=>finish(image);image.onerror=()=>finish(null);
   const timeout=setTimeout(()=>finish(null),8000);
   image.onload=()=>{clearTimeout(timeout);finish(image)};
   image.onerror=()=>{clearTimeout(timeout);finish(null)};
@@ -112,7 +111,7 @@ function storyCover(ctx,image,x,y,w,h,radius){
  ctx.restore()
 }
 function storyWrap(ctx,text,x,y,maxWidth,lineHeight,maxLines){
- const words=String(text||'').replace(/\\s+/g,' ').trim().split(' ').filter(Boolean);let lines=[],line='';
+ const words=String(text||'').replace(/\s+/g,' ').trim().split(' ').filter(Boolean);let lines=[],line='';
  words.forEach(word=>{const next=line?line+' '+word:word;if(ctx.measureText(next).width>maxWidth&&line){lines.push(line);line=word}else line=next});
  if(line)lines.push(line);
  const clipped=lines.length>maxLines;if(clipped)lines=lines.slice(0,maxLines);
@@ -149,12 +148,16 @@ async function createStoryBlob(article){
 function initStoryMode(){
  let current=null,opener=null,currentBlob=null,currentName='hikaye';
  const modal=document.createElement('div');modal.className='story-modal';modal.id='storyModal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','storyPreviewTitle');
- modal.innerHTML='<div class="story-modal-backdrop" data-story-close></div><div class="story-modal-panel"><button class="story-close" type="button" aria-label="Hikâye önizlemesini kapat">×</button><div class="story-modal-stage"><article class="story-poster"><div class="story-poster-backdrop" id="storyPosterBackdrop"></div><div class="story-poster-card"><div class="story-poster-top"><span>H.P.R</span><small>Psikolog Beyza Nur Ömültay</small></div><div class="story-poster-cover"><img id="storyPosterImage" alt="" hidden><span id="storyPosterPlaceholder" aria-hidden="true">✦</span></div><div class="story-poster-copy"><span class="story-poster-category" id="storyPosterCategory"></span><h2 id="storyPreviewTitle"></h2><p id="storyPreviewDescription"></p></div><div class="story-poster-footer"><span id="storyPosterDate"></span><strong>Psikolog Beyza Nur Ömültay</strong><small>Kendine şefkatle pırıltılandır.</small></div></div></article></div><div class="story-modal-actions"><button class="btn fill" id="storyDownload" type="button">Görseli indir ↧</button><button class="btn" id="storyShare" type="button">Telefonda paylaş ↗</button><p id="storyStatus" role="status" aria-live="polite"></p></div></div>';
+ modal.innerHTML='<div class="story-modal-backdrop" data-story-close></div><div class="story-modal-panel"><button class="story-close" type="button" aria-label="Hikâye önizlemesini kapat">×</button><div class="story-modal-stage"><article class="story-poster"><div class="story-poster-backdrop" id="storyPosterBackdrop"></div><div class="story-poster-card"><div class="story-poster-top"><span>H.P.R</span><small>Psikolog Beyza Nur Ömültay</small></div><div class="story-poster-cover"><img id="storyPosterImage" alt="" hidden><span id="storyPosterPlaceholder" aria-hidden="true">✦</span></div><div class="story-poster-copy"><span class="story-poster-category" id="storyPosterCategory"></span><h2 id="storyPreviewTitle"></h2><p id="storyPreviewDescription"></p></div><div class="story-poster-footer"><span id="storyPosterDate"></span><strong>Psikolog Beyza Nur Ömültay</strong><small>Kendine şefkatle pırıltılandır.</small></div></div></article></div><div class="story-modal-actions"><button class="btn fill" id="storyDownload" type="button" disabled>Görseli indir ↧</button><button class="btn" id="storyShare" type="button" disabled>Telefonda paylaş ↗</button><p id="storyStatus" role="status" aria-live="polite"></p></div></div>';
  document.body.appendChild(modal);
+ const downloadBlob=(blob,name)=>{const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=name+'.png';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)};
  const close=()=>{modal.hidden=true;document.body.classList.remove('story-open');currentBlob=null;if(opener&&opener.isConnected)opener.focus()};
  modal.querySelector('.story-close').addEventListener('click',close);
  modal.querySelector('[data-story-close]').addEventListener('click',close);
- modal.addEventListener('keydown',event=>{if(event.key==='Escape')close()});
+ modal.addEventListener('keydown',event=>{
+  if(event.key==='Escape'){close();return}
+  if(event.key==='Tab'){const items=[...modal.querySelectorAll('button:not(:disabled)')];if(!items.length)return;const first=items[0],last=items[items.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}}
+ });
  document.addEventListener('click',event=>{
   const button=event.target.closest('[data-story-open]');if(!button)return;
   event.preventDefault();event.stopPropagation();const article=storyItems.get(button.dataset.storyOpen);if(!article)return;
@@ -166,14 +169,32 @@ function initStoryMode(){
   modal.querySelector('#storyPreviewTitle').textContent=article.title||'';
   modal.querySelector('#storyPreviewDescription').textContent=article.description||article.body||'';
   modal.querySelector('#storyPosterDate').textContent=storyFormatDate(article);
-  modal.querySelector('#storyStatus').textContent='';
-  modal.hidden=false;document.body.classList.add('story-open');modal.querySelector('.story-close').focus()
+  const status=modal.querySelector('#storyStatus'),downloadButton=modal.querySelector('#storyDownload'),shareButton=modal.querySelector('#storyShare');
+  status.textContent='9:16 hikâye görseli hazırlanıyor…';downloadButton.disabled=true;shareButton.disabled=true;
+  modal.hidden=false;document.body.classList.add('story-open');modal.querySelector('.story-close').focus();
+  createStoryBlob(article).then(result=>{
+   if(current!==article||modal.hidden)return;
+   currentBlob=result.blob;downloadButton.disabled=false;shareButton.disabled=false;
+   status.textContent=result.imageIncluded?'Instagram Hikâyesi için 1080 × 1920 görsel hazır.':'Kapak görseli alınamadı; yazı görseli arka plan dokusuyla hazırlandı.'
+  }).catch(()=>{if(current===article&&!modal.hidden)status.textContent='Hikâye görseli hazırlanamadı. Tekrar deneyebilirsin.'})
  });
- const download=async()=>{if(!current)return null;const status=modal.querySelector('#storyStatus');status.textContent='1080 × 1920 görsel hazırlanıyor…';const result=await createStoryBlob(current);currentBlob=result.blob;const file=new File([result.blob],currentName+'.png',{type:'image/png'});if(!result.imageIncluded)status.textContent='Kapak görseli dış kaynağa kapalı olduğu için tasarımda kullanılamadı; görselsiz arka planla hazırlandı.';else status.textContent='Instagram hikâyesi için görsel hazır.';return file};
- modal.querySelector('#storyDownload').addEventListener('click',async()=>{try{const file=await download();if(!file)return;const url=URL.createObjectURL(file);const link=document.createElement('a');link.href=url;link.download=file.name;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}catch(error){modal.querySelector('#storyStatus').textContent='Görsel oluşturulamadı. Tekrar deneyebilirsin.'}});
- modal.querySelector('#storyShare').addEventListener('click',async()=>{try{const file=await download();if(!file)return;if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:current.title,text:'Psikolog Beyza Nur Ömültay’dan: '+current.title})}else{const url=URL.createObjectURL(file);const link=document.createElement('a');link.href=url;link.download=file.name;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);modal.querySelector('#storyStatus').textContent='Görsel indirildi. Instagram’da Hikâye oluşturup galerinden seçebilirsin.'}}catch(error){if(error.name!=='AbortError')modal.querySelector('#storyStatus').textContent='Paylaşım açılamadı. Görseli indirip Instagram’dan ekleyebilirsin.'}});
+ modal.querySelector('#storyDownload').addEventListener('click',()=>{
+  if(!currentBlob)return;
+  downloadBlob(currentBlob,currentName);
+  modal.querySelector('#storyStatus').textContent='1080 × 1920 PNG görseli indirildi.'
+ });
+ modal.querySelector('#storyShare').addEventListener('click',()=>{
+  if(!currentBlob)return;
+  const file=new File([currentBlob],currentName+'.png',{type:'image/png'}),status=modal.querySelector('#storyStatus');
+  try{
+   if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+    navigator.share({files:[file],title:current.title,text:'Psikolog Beyza Nur Ömültay’dan: '+current.title}).catch(error=>{if(error.name!=='AbortError')status.textContent='Paylaşım açılamadı. Görseli indirip Instagram’dan ekleyebilirsin.'});
+    return
+   }
+  }catch(error){}
+  downloadBlob(currentBlob,currentName);status.textContent='Görsel indirildi. Instagram’da Hikâye oluşturup galerinden seçebilirsin.'
+ });
 }
-
 function initAdminBar(){const bar=$('.adminbar');if(!bar)return;let last=window.scrollY,frame=0;const onScroll=()=>{if(frame)return;frame=requestAnimationFrame(()=>{const y=window.scrollY,down=y>last;bar.classList.toggle('adminbar-hidden',down&&y>80);bar.classList.toggle('adminbar-visible',!down||y<=80);last=y;frame=0})};bar.classList.add('adminbar-visible');window.addEventListener('scroll',onScroll,{passive:true})}
 function initParallax(){const scene=$('.parallax-scene');if(!scene||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;const objects=scene.querySelectorAll('[data-depth]');let frame=0;const update=()=>{frame=0;const main=$('main'),scroll=Math.max(0,window.scrollY-main.offsetTop);objects.forEach(item=>{const depth=Number(item.dataset.depth)||.5;item.style.setProperty('--parallax-y',(scroll*(1-depth)).toFixed(1)+'px')})};window.addEventListener('scroll',()=>{if(!frame)frame=requestAnimationFrame(update)},{passive:true});update()}
 })();

@@ -48,7 +48,8 @@ function setSeoMeta(selector,value){const element=$(selector);if(element&&value)
 function updateArticleSeo(article){
  const title=article.title+' | Psikolog Beyza Nur Ömültay';
  const description=String(article.description||article.body||'').replace(/\s+/g,' ').trim().slice(0,160);
- const pageUrl='https://pskbeyzaomultay.com/makale.html?id='+encodeURIComponent(article.slug);\n const canonical=safeExternalUrl(article.source_url)||pageUrl;
+ const pageUrl='https://pskbeyzaomultay.com/makale.html?id='+encodeURIComponent(article.slug);
+ const canonical=safeExternalUrl(article.source_url)||pageUrl;
  const image=safeExternalUrl(article.image_url);
  document.title=title;
  setSeoMeta('meta[name="description"]',description);
@@ -61,7 +62,8 @@ function updateArticleSeo(article){
  setSeoMeta('meta[name="twitter:description"]',description);
  setSeoMeta('meta[name="twitter:image"]',image);
  const canonicalLink=$('link[rel="canonical"]');if(canonicalLink)canonicalLink.href=canonical;
- const schema={'@context':'https://schema.org','@type':article.is_short?'Article':'BlogPosting',headline:article.title,description,url:canonical,mainEntityOfPage:canonical,articleSection:article.category||undefined,inLanguage:'tr-TR',author:{'@type':'Person',name:'Psikolog Beyza Nur Ömültay',url:'https://pskbeyzaomultay.com/ozgecmis.html'}};
+ const articleAuthor=article.source_author||(!article.is_short?'Psikolog Beyza Nur Ömültay':'');
+ const schema={'@context':'https://schema.org','@type':article.is_short?'Article':'BlogPosting',headline:article.title,description,url:canonical,mainEntityOfPage:canonical,articleSection:article.category||undefined,inLanguage:'tr-TR',author:articleAuthor?{'@type':'Person',name:articleAuthor,url:'https://pskbeyzaomultay.com/ozgecmis.html'}:undefined};
  if(image)schema.image=image;
  if(article.created_at&&!Number.isNaN(Date.parse(article.created_at)))schema.datePublished=new Date(article.created_at).toISOString();
  if(article.updated_at&&!Number.isNaN(Date.parse(article.updated_at)))schema.dateModified=new Date(article.updated_at).toISOString();

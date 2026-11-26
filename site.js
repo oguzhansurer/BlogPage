@@ -22,7 +22,10 @@ function storyCardTools(article){
  storyItems.set(String(article.slug),article);const id=esc(article.slug),title=esc(article.title);
  return '<div class="story-card-actions"><button type="button" class="story-icon-button" data-story-download="'+id+'" aria-label="'+title+' hikâye görselini indir" title="Görseli indir"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0 4-4m-4 4-4-4"/><path d="M5 16v4h14v-4"/></svg></button><button type="button" class="story-icon-button" data-story-open="'+id+'" aria-label="'+title+' için hikâye modunu aç" title="Hikâye modu"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/><path d="m17 3 4 4"/></svg></button></div>'
 }
-function storyInlineTools(article){return '<div class="story-inline-actions">'+storyCardTools(article)+'</div>'}
+function storyInlineTools(article){
+ storyItems.set(String(article.slug),article);const id=esc(article.slug),title=esc(article.title);
+ return '<div class="story-inline-actions"><div class="story-card-actions"><button type="button" class="story-icon-button" data-story-open="'+id+'" aria-label="'+title+' için hikâye modunu aç" title="Hikâye modu"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/><path d="m17 3 4 4"/></svg></button></div></div>'
+}
 function renderShortPosts(posts){
  const target=$('#shortPostCards');if(!target)return;
  posts.forEach(a=>storyItems.set(String(a.slug),a));

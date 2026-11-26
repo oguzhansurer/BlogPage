@@ -39,5 +39,18 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "beyza-nur-blog.vercel.app"
+        }
+      ],
+      "destination": "https://pskbeyzaomultay.com/:path*",
+      "permanent": true
+    }
   ]
 }

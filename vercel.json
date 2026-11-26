@@ -42,14 +42,14 @@
   ],
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "has": [
         {
           "type": "host",
           "value": "beyza-nur-blog.vercel.app"
         }
       ],
-      "destination": "https://pskbeyzaomultay.com/:path*",
+      "destination": "https://pskbeyzaomultay.com/$1",
       "permanent": true
     }
   ]

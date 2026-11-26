@@ -294,3 +294,7 @@ body.story-open{overflow:hidden}
  .story-modal-status{left:12px;bottom:max(18px,env(safe-area-inset-bottom));max-width:calc(100vw - 82px);font-size:10px}
 }
 @media(prefers-reduced-motion:reduce){.story-icon-button,.story-screen-download{transition:none}}
+
+/* Raise the story download control while keeping it at the lower right. */
+.story-screen-download{bottom:max(88px,env(safe-area-inset-bottom))}
+@media(max-width:760px){.story-screen-download{bottom:max(74px,env(safe-area-inset-bottom))}}

@@ -81,15 +81,22 @@ async function initArticle(){
  document.querySelectorAll('.year').forEach(x=>x.textContent=new Date().getFullYear())
 }
 
+const expertiseDescriptions=[
+ 'Psikolojik süreçleri bilimsel kaynaklar ve güncel araştırmalar ışığında takip etmeye yönelik akademik ilgi.',
+ 'Psikoloji bilgisini anlaşılır, kaynaklı ve gündelik yaşama dokunan içeriklere dönüştürme çalışmaları.',
+ 'Psikoloji alanındaki lisansüstü eğitim ve mesleki gelişim sürecinde derinleşen konu başlıkları.'
+];
+function describeExpertise(area,index){
+ const text=String(area||'').toLocaleLowerCase('tr');
+ if(/eğitim|içerik|yaz|akadem|araştır/.test(text))return expertiseDescriptions[1];
+ if(/duygu|şefkat|farkındalık|ilişki|iletişim/.test(text))return 'Bu başlık, psikoloji literatürünü izleme ve kavramları gündelik yaşam bağlamında ele alma ilgisini ifade eder.';
+ return expertiseDescriptions[index%expertiseDescriptions.length];
+}
 async function initAreasPage(){
  const page=$('#areasPage');if(!page)return;
- const [publicProfile,posts]=await Promise.all([readProfile(),readArticles()]);
- const bio=$('#areasBiography');
- if(bio)bio.innerHTML=String(publicProfile.about||'').split('\\n').filter(Boolean).map(p=>'<p>'+esc(p)+'</p>').join('');
+ const publicProfile=await readProfile();
  const areaList=$('#expertiseCards'),areas=publicProfile.expertise||[];
- if(areaList)areaList.innerHTML=areas.length?areas.map((area,index)=>'<article class="card"><div class="card-content"><div class="card-tag">ÇALIŞMA BAŞLIĞI '+String(index+1).padStart(2,'0')+'</div><h3>'+esc(area)+'</h3></div></article>').join(''):'<p class="muted">Çalışma başlıkları henüz eklenmedi.</p>';
- const publications=$('#externalPublications'),external=(posts||[]).filter(post=>safeExternalUrl(post.source_url));
- if(publications)publications.innerHTML=external.length?external.map(post=>'<article class="card"><div class="card-content"><div class="card-tag">YAYINLANAN MAKALE</div><h3>'+esc(post.title)+'</h3><p>'+esc(post.description||'Psikoloji üzerine makale.')+'</p><a class="readmore" href="'+esc(safeExternalUrl(post.source_url))+'" target="_blank" rel="noopener noreferrer">Yayıncı sayfasına git ↗</a></div></article>').join(''):'<p class="muted">Yayımlanan makaleler eklendiğinde burada listelenecek.</p>';
+ if(areaList)areaList.innerHTML=areas.length?areas.map((area,index)=>'<article class="card expertise-card"><div class="card-content"><div class="card-tag">ÇALIŞMA BAŞLIĞI '+String(index+1).padStart(2,'0')+'</div><h3>'+esc(area)+'</h3><p class="expertise-description">'+esc(describeExpertise(area,index))+'</p></div></article>').join(''):'<p class="muted">Çalışma başlıkları henüz eklenmedi.</p>';
  const year=$('#year');if(year)year.textContent=new Date().getFullYear()
 }
 function slugify(text){return text.toLocaleLowerCase('tr').replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}

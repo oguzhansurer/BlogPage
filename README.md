@@ -10,9 +10,9 @@ Bordo tonlarında çok sayfalı psikoloji blogu. Statik HTML/CSS/JavaScript ön 
 
 ## Sayfalar
 
-- `index.html`: Ana sayfa, makale kartları, hakkımda ve özgeçmiş
-- `makale.html?id=...`: Tam yazı için ayrı sayfa
-- `icerik-masasi.html`: Yönetici girişi, makale/CV düzenleme paneli
+- `/`: Ana sayfa, makale kartları, hakkımda ve özgeçmiş
+- `makale/...`: Tam yazı için ayrı sayfa
+- `icerik-masasi`: Yönetici girişi, makale/CV düzenleme paneli
 - `supabase/setup.sql`: Veritabanı tabloları, örnek yazılar ve erişim kuralları
 - `supabase-config.js`: Projenin URL'si ve herkese açık publishable key
 
@@ -51,7 +51,7 @@ Ana sayfa portre fotoğrafı, İçerik Masası > Hakkımda ve özgeçmiş bölü
 Yönetim panelindeki makale formunda “Bu içeriği kısa not olarak yayınla” kutusu işaretlendiğinde içerik Kısa Notlar sayfasında listelenir. Kısa notlar normal makale ana sayfasında görünmez; seçilerek tam metin sayfasında açılabilir.
 
 
-Ana sayfada en yeni üç uzun makale görünür. Menüdeki “Makaleler” bağlantısı ve ana sayfadaki “Tüm makalelerimi gör” düğmesi tüm uzun makalelerin listelendiği `makaleler.html` sayfasını açar. Kısa notlar bu listeden ayrı tutulur.
+Ana sayfada en yeni üç uzun makale görünür. Menüdeki “Makaleler” bağlantısı ve ana sayfadaki “Tüm makalelerimi gör” düğmesi tüm uzun makalelerin listelendiği `makaleler` sayfasını açar. Kısa notlar bu listeden ayrı tutulur.
 
 
 ## Google Search Console

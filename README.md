@@ -4,8 +4,8 @@ Bordo tonlarında çok sayfalı psikoloji blogu. Statik HTML/CSS/JavaScript ön 
 
 ## Yayındaki site ve yönetim paneli
 
-- Site: https://pskbeyzaomultay.com/index.html
-- İçerik masası: https://pskbeyzaomultay.com/icerik-masasi.html
+- Site: https://pskbeyzaomultay.com/
+- İçerik masası: https://pskbeyzaomultay.com/icerik-masasi
 - Supabase projesi: https://supabase.com/dashboard/project/vcpktnjgvmhxucwwhame
 
 ## Sayfalar

@@ -46,6 +46,7 @@
       "has": [
         {
           "type": "host",
+          "key": "host",
           "value": "beyza-nur-blog.vercel.app"
         }
       ],

@@ -48,20 +48,20 @@ function setSeoMeta(selector,value){const element=$(selector);if(element&&value)
 function updateArticleSeo(article){
  const title=article.title+' | Psikolog Beyza Nur Ömültay';
  const description=String(article.description||article.body||'').replace(/\s+/g,' ').trim().slice(0,160);
- const canonical='https://beyza-nur-blog.vercel.app/makale.html?id='+encodeURIComponent(article.slug);
+ const pageUrl='https://pskbeyzaomultay.com/makale.html?id='+encodeURIComponent(article.slug);\n const canonical=safeExternalUrl(article.source_url)||pageUrl;
  const image=safeExternalUrl(article.image_url);
  document.title=title;
  setSeoMeta('meta[name="description"]',description);
  setSeoMeta('meta[property="og:title"]',title);
  setSeoMeta('meta[property="og:description"]',description);
- setSeoMeta('meta[property="og:url"]',canonical);
+ setSeoMeta('meta[property="og:url"]',pageUrl);
  setSeoMeta('meta[property="og:type"]','article');
  setSeoMeta('meta[property="og:image"]',image);
  setSeoMeta('meta[name="twitter:title"]',title);
  setSeoMeta('meta[name="twitter:description"]',description);
  setSeoMeta('meta[name="twitter:image"]',image);
  const canonicalLink=$('link[rel="canonical"]');if(canonicalLink)canonicalLink.href=canonical;
- const schema={'@context':'https://schema.org','@type':article.is_short?'Article':'BlogPosting',headline:article.title,description,url:canonical,mainEntityOfPage:canonical,author:{'@type':'Person',name:'Psikolog Beyza Nur Ömültay',url:'https://beyza-nur-blog.vercel.app/'}};
+ const schema={'@context':'https://schema.org','@type':article.is_short?'Article':'BlogPosting',headline:article.title,description,url:canonical,mainEntityOfPage:canonical,articleSection:article.category||undefined,inLanguage:'tr-TR',author:{'@type':'Person',name:'Psikolog Beyza Nur Ömültay',url:'https://pskbeyzaomultay.com/ozgecmis.html'}};
  if(image)schema.image=image;
  if(article.created_at&&!Number.isNaN(Date.parse(article.created_at)))schema.datePublished=new Date(article.created_at).toISOString();
  if(article.updated_at&&!Number.isNaN(Date.parse(article.updated_at)))schema.dateModified=new Date(article.updated_at).toISOString();
@@ -79,6 +79,17 @@ async function initArticle(){
  document.querySelectorAll('.year').forEach(x=>x.textContent=new Date().getFullYear())
 }
 
+async function initAreasPage(){
+ const page=$('#areasPage');if(!page)return;
+ const [publicProfile,posts]=await Promise.all([readProfile(),readArticles()]);
+ const bio=$('#areasBiography');
+ if(bio)bio.innerHTML=String(publicProfile.about||'').split('\\n').filter(Boolean).map(p=>'<p>'+esc(p)+'</p>').join('');
+ const areaList=$('#expertiseCards'),areas=publicProfile.expertise||[];
+ if(areaList)areaList.innerHTML=areas.length?areas.map((area,index)=>'<article class="card"><div class="card-content"><div class="card-tag">ÇALIŞMA BAŞLIĞI '+String(index+1).padStart(2,'0')+'</div><h3>'+esc(area)+'</h3></div></article>').join(''):'<p class="muted">Çalışma başlıkları henüz eklenmedi.</p>';
+ const publications=$('#externalPublications'),external=(posts||[]).filter(post=>safeExternalUrl(post.source_url));
+ if(publications)publications.innerHTML=external.length?external.map(post=>'<article class="card"><div class="card-content"><div class="card-tag">YAYINLANAN MAKALE</div><h3>'+esc(post.title)+'</h3><p>'+esc(post.description||'Psikoloji üzerine makale.')+'</p><a class="readmore" href="'+esc(safeExternalUrl(post.source_url))+'" target="_blank" rel="noopener noreferrer">Yayıncı sayfasına git ↗</a></div></article>').join(''):'<p class="muted">Yayımlanan makaleler eklendiğinde burada listelenecek.</p>';
+ const year=$('#year');if(year)year.textContent=new Date().getFullYear()
+}
 function slugify(text){return text.toLocaleLowerCase('tr').replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
 async function ensureAdminStorageAccess(){const {data:current,error:sessionError}=await db.auth.getSession();let session=current?.session;if(sessionError)return{ok:false,message:'Oturum doğrulanamadı. İçerik Masası’ndan çıkış yapıp yeniden giriş yap.'};if(!session||!session.expires_at||session.expires_at*1000<Date.now()+60000){const {data:refreshed,error:refreshError}=await db.auth.refreshSession();session=refreshed?.session;if(refreshError||!session)return{ok:false,message:'Yönetici oturumun yenilenemedi. İçerik Masası’ndan çıkış yapıp yeniden giriş yap.'}}const {data:admin,error:adminError}=await db.from('site_admins').select('user_id').eq('user_id',session.user.id).maybeSingle();if(adminError||!admin)return{ok:false,message:'Bu oturum yönetici hesabına bağlı değil. İçerik Masası’ndan çıkış yapıp yönetici hesabınla yeniden giriş yap.'};return{ok:true}}
 function initAdmin(){const login=$('#loginForm');if(!login)return;const loginMsg=$('#loginMsg'),loginBox=$('#loginBox'),dashboard=$('#dashboard');
@@ -94,7 +105,7 @@ function initAdmin(){const login=$('#loginForm');if(!login)return;const loginMsg
  $('#profileForm').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);const status=$('#profileMsg');status.textContent='Bilgiler kaydediliyor…';let cvUrl=profile.cv_pdf_url||null,cvPath=profile.cv_pdf_path||null,portraitUrl=profile.portrait_url||'',portraitPath=profile.portrait_path||'',newPortraitPath='';const portraitFile=f.get('portraitPhoto');if(portraitFile&&portraitFile.size){const allowed={'image/jpeg':'.jpg','image/png':'.png','image/webp':'.webp','image/avif':'.avif'};if(!allowed[portraitFile.type]){status.textContent='JPG, PNG, WebP veya AVIF biçiminde bir fotoğraf seç.';return}if(portraitFile.size>5*1024*1024){status.textContent='Fotoğraf dosyası 5 MB sınırını aşamaz.';return}const access=await ensureAdminStorageAccess();if(!access.ok){status.textContent=access.message;return}newPortraitPath='profile/portrait-'+Date.now()+allowed[portraitFile.type];const {error:portraitError}=await db.storage.from('blog-covers').upload(newPortraitPath,portraitFile,{contentType:portraitFile.type,upsert:false});if(portraitError){status.textContent='Fotoğraf yüklenemedi: '+portraitError.message;return}portraitUrl=db.storage.from('blog-covers').getPublicUrl(newPortraitPath).data.publicUrl+'?v='+Date.now();portraitPath=newPortraitPath}const pdf=f.get('cvPdf');if(pdf&&pdf.size){if(pdf.type!=='application/pdf'){status.textContent='Lütfen PDF dosyası seç.';if(newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);return}if(pdf.size>15*1024*1024){status.textContent='PDF dosyası 15 MB sınırını aşamaz.';if(newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);return}const access=await ensureAdminStorageAccess();if(!access.ok){status.textContent=access.message;if(newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);return}const nextPath='cv/ozgecmis-'+Date.now()+'.pdf';const {error:uploadError}=await db.storage.from('professional-cv').upload(nextPath,pdf,{contentType:'application/pdf',upsert:false});if(uploadError){status.textContent='PDF yüklenemedi: '+uploadError.message;if(newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);return}cvUrl=db.storage.from('professional-cv').getPublicUrl(nextPath).data.publicUrl;cvPath=nextPath}const values={id:1,about:f.get('about'),education:f.get('education').split('\n').filter(Boolean).map(line=>{const [year,...rest]=line.split('|').map(x=>x.trim());return{year:year||'',institution:rest.join(' | ')}}),expertise:f.get('expertise').split('\n').map(x=>x.trim()).filter(Boolean),contact_email:f.get('contactEmail').trim(),instagram_url:f.get('instagramUrl').trim(),linkedin_url:validLinkedInUrl(f.get('linkedinUrl').trim()),cv_pdf_url:cvUrl,cv_pdf_path:cvPath,portrait_url:portraitUrl,portrait_path:portraitPath,updated_at:new Date().toISOString()};const {error}=await db.from('site_profile').upsert(values,{onConflict:'id'});if(error&&newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);status.textContent=error?'Bilgiler kaydedilemedi: '+error.message:'Bilgiler ve özgeçmiş PDF kaydedildi.';if(!error){if(profile.portrait_path&&portraitPath!==profile.portrait_path)await db.storage.from('blog-covers').remove([profile.portrait_path]);if(profile.cv_pdf_path&&cvPath!==profile.cv_pdf_path)await db.storage.from('professional-cv').remove([profile.cv_pdf_path]);await loadAdmin()}};
  $('#logout').onclick=async()=>{await db.auth.signOut();location.reload()};
 }
-initHome();initArticlesPage();initArticle();initCvPage();initShortPage();initAdmin();initParallax();initAdminBar();initStoryMode();
+initHome();initArticlesPage();initArticle();initCvPage();initShortPage();initAreasPage();initAdmin();initParallax();initAdminBar();initStoryMode();
 function storyFormatDate(article){
  const value=article.created_at||article.updated_at;
  if(!value)return 'Yayındaki bir yazı';

@@ -102,7 +102,7 @@ function splitExpertiseModules(areas){
   const value=String(area||'');
   if(!/terapi yaklaşımları/i.test(value))return [value];
   const modules=value.split(':').slice(1).join(':').replace(/[()]/g,'').split(',').map(x=>x.trim()).filter(Boolean);
-  return modules.map(module=>module+' eğitimi');
+  return modules.map(module=>{const key=module.toLocaleLowerCase('tr');if(key.includes('emdr'))return 'EMDR eğitimi';if(key.includes('bilişsel')||key.includes('bdt'))return 'Bilişsel davranışçı terapi (BDT) eğitimi';if(key.includes('spor'))return 'Spor psikolojisi eğitimi';if(key.includes('sanat'))return 'Sanat terapisi eğitimi';if(key.includes('cinsel'))return 'Cinsel terapi eğitimi';return module+' eğitimi'});
  });
 }
 function titleCaseExpertise(area){

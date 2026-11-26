@@ -161,46 +161,44 @@ async function createStoryBlob(article){
 }
 function initStoryMode(){
  let current=null,opener=null,currentBlob=null,currentName='hikaye',previewUrl=null,renderId=0;
- const modal=document.createElement('div');modal.className='story-modal';modal.id='storyModal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','storyPreviewTitle');
- modal.innerHTML='<div class="story-modal-backdrop" data-story-close></div><div class="story-modal-panel"><button class="story-close" type="button" aria-label="Hikâye önizlemesini kapat">×</button><div class="story-modal-stage"><img class="story-poster-preview" id="storyCanvasPreview" alt="" aria-describedby="storyStatus"></div><div class="story-modal-actions"><button class="btn fill" id="storyDownload" type="button" disabled>Görseli indir ↧</button><button class="btn" id="storyShare" type="button" disabled>Telefonda paylaş ↗</button><p id="storyStatus" role="status" aria-live="polite"></p></div></div>';
+ const modal=document.createElement('div');modal.className='story-modal';modal.id='storyModal';modal.hidden=true;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-label','Tam ekran hikâye önizlemesi');
+ modal.innerHTML='<div class="story-modal-backdrop" data-story-close></div><div class="story-screen-backdrop" id="storyScreenBackdrop" aria-hidden="true"></div><div class="story-modal-panel"><button class="story-close" type="button" aria-label="Hikâye önizlemesini kapat">×</button><div class="story-modal-stage"><img class="story-poster-preview" id="storyCanvasPreview" alt=""></div><p class="story-modal-status" id="storyStatus" role="status" aria-live="polite"></p><button class="story-screen-download" id="storyDownload" type="button" aria-label="Hikâye görselini indir" title="Görseli indir" disabled><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0 4-4m-4 4-4-4"/><path d="M5 16v4h14v-4"/></svg></button></div>';
  document.body.appendChild(modal);
  const downloadBlob=(blob,name)=>{const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=name+'.png';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)};
- const close=()=>{modal.hidden=true;document.body.classList.remove('story-open');currentBlob=null;renderId++;if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null}const preview=modal.querySelector('#storyCanvasPreview');preview.removeAttribute('src');if(opener&&opener.isConnected)opener.focus()};
+ const close=()=>{modal.hidden=true;document.body.classList.remove('story-open');currentBlob=null;renderId++;if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null}modal.querySelector('#storyCanvasPreview').removeAttribute('src');if(opener&&opener.isConnected)opener.focus()};
  modal.querySelector('.story-close').addEventListener('click',close);
  modal.querySelector('[data-story-close]').addEventListener('click',close);
  modal.addEventListener('keydown',event=>{
   if(event.key==='Escape'){close();return}
   if(event.key==='Tab'){const items=[...modal.querySelectorAll('button:not(:disabled)')];if(!items.length)return;const first=items[0],last=items[items.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}}
  });
- document.addEventListener('click',event=>{
+ document.addEventListener('click',async event=>{
+  const cardDownload=event.target.closest('[data-story-download]');
+  if(cardDownload){
+   event.preventDefault();event.stopPropagation();const article=storyItems.get(cardDownload.dataset.storyDownload);if(!article)return;
+   cardDownload.disabled=true;
+   try{const result=await createStoryBlob(article);downloadBlob(result.blob,String(article.slug||'hikaye').replace(/[^a-z0-9-]/gi,'-'))}
+   catch(error){cardDownload.title='Görsel oluşturulamadı'}
+   finally{if(cardDownload.isConnected)cardDownload.disabled=false}
+   return
+  }
   const button=event.target.closest('[data-story-open]');if(!button)return;
   event.preventDefault();event.stopPropagation();const article=storyItems.get(button.dataset.storyOpen);if(!article)return;
   opener=button;current=article;currentBlob=null;const task=++renderId;currentName=String(article.slug||'hikaye').replace(/[^a-z0-9-]/gi,'-');
-  const status=modal.querySelector('#storyStatus'),downloadButton=modal.querySelector('#storyDownload'),shareButton=modal.querySelector('#storyShare'),preview=modal.querySelector('#storyCanvasPreview');
-  status.textContent='9:16 hikâye görseli hazırlanıyor…';downloadButton.disabled=true;shareButton.disabled=true;
-  modal.hidden=false;document.body.classList.add('story-open');modal.querySelector('.story-close').focus();
+  const status=modal.querySelector('#storyStatus'),download=modal.querySelector('#storyDownload'),preview=modal.querySelector('#storyCanvasPreview'),backdrop=modal.querySelector('#storyScreenBackdrop');
+  const image=safeExternalUrl(article.image_url);
+  backdrop.style.setProperty('--story-modal-bg',image?'url('+JSON.stringify(image)+')':'none');
+  status.textContent='9:16 hikâye tasarımı hazırlanıyor…';download.disabled=true;modal.hidden=false;document.body.classList.add('story-open');modal.querySelector('.story-close').focus();
   createStoryBlob(article).then(result=>{
    if(task!==renderId||modal.hidden)return;
-   currentBlob=result.blob;previewUrl=URL.createObjectURL(result.blob);preview.src=previewUrl;preview.alt=article.title+' başlıklı 1080 × 1920 Instagram hikâye görseli';
-   downloadButton.disabled=false;shareButton.disabled=false;
-   status.textContent=result.imageIncluded?'Görsel hazır. Önizleme indirilecek PNG ile aynıdır.':'Kapak görseli alınamadı; tasarım bulanık bordo arka planla hazırlandı.'
+   currentBlob=result.blob;previewUrl=URL.createObjectURL(result.blob);preview.src=previewUrl;preview.alt=article.title+' başlıklı 1080 × 1920 tam ekran hikâye kartı';
+   download.disabled=false;status.textContent=result.imageIncluded?'Görsel hazır. Sağ alttaki simgeyle PNG olarak kaydedebilirsin.':'Kapak görseli alınamadı; tasarım bulanık bordo arka planla hazırlandı.'
   }).catch(()=>{if(task===renderId&&!modal.hidden)status.textContent='Hikâye görseli hazırlanamadı. Tekrar deneyebilirsin.'})
  });
  modal.querySelector('#storyDownload').addEventListener('click',()=>{
   if(!currentBlob)return;
   downloadBlob(currentBlob,currentName);
-  modal.querySelector('#storyStatus').textContent='1080 × 1920 PNG görseli indirildi.'
- });
- modal.querySelector('#storyShare').addEventListener('click',()=>{
-  if(!currentBlob)return;
-  const file=new File([currentBlob],currentName+'.png',{type:'image/png'}),status=modal.querySelector('#storyStatus');
-  try{
-   if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
-    navigator.share({files:[file],title:current.title,text:'Psikolog Beyza Nur Ömültay’dan: '+current.title}).catch(error=>{if(error.name!=='AbortError')status.textContent='Paylaşım açılamadı. Görseli indirip Instagram’dan ekleyebilirsin.'});
-    return
-   }
-  }catch(error){}
-  downloadBlob(currentBlob,currentName);status.textContent='Görsel indirildi. Instagram’da Hikâye oluşturup galerinden seçebilirsin.'
+  modal.querySelector('#storyStatus').textContent='Hikâye PNG görseli indirildi.'
  });
 }
 function initAdminBar(){const bar=$('.adminbar');if(!bar)return;let last=window.scrollY,frame=0;const onScroll=()=>{if(frame)return;frame=requestAnimationFrame(()=>{const y=window.scrollY,down=y>last;bar.classList.toggle('adminbar-hidden',down&&y>80);bar.classList.toggle('adminbar-visible',!down||y<=80);last=y;frame=0})};bar.classList.add('adminbar-visible');window.addEventListener('scroll',onScroll,{passive:true})}

@@ -5,7 +5,7 @@ Bordo tonlarında çok sayfalı psikoloji blogu. Statik HTML/CSS/JavaScript ön 
 ## Yayındaki site ve yönetim paneli
 
 - Site: https://pskbeyzaomultay.com/index.html
-- İçerik masası: https://beyza-nur-blog.vercel.app/icerik-masasi.html
+- İçerik masası: https://pskbeyzaomultay.com/icerik-masasi.html
 - Supabase projesi: https://supabase.com/dashboard/project/vcpktnjgvmhxucwwhame
 
 ## Sayfalar
@@ -52,3 +52,12 @@ Yönetim panelindeki makale formunda “Bu içeriği kısa not olarak yayınla�
 
 
 Ana sayfada en yeni üç uzun makale görünür. Menüdeki “Makaleler” bağlantısı ve ana sayfadaki “Tüm makalelerimi gör” düğmesi tüm uzun makalelerin listelendiği `makaleler.html` sayfasını açar. Kısa notlar bu listeden ayrı tutulur.
+
+
+## Google Search Console
+
+- Canonical site: `https://pskbeyzaomultay.com/`
+- Sitemap: `https://pskbeyzaomultay.com/sitemap.xml` (also listed in `robots.txt`)
+- In Search Console, add the site as a URL-prefix property, verify ownership with Google’s HTML tag, then submit `sitemap.xml`.
+- Use **Performance → Search results** to review queries, impressions, clicks, average position, and page-level visibility after Google begins collecting data.
+- The verification tag is account-specific and is not committed here; add it only after the verified owner supplies the tag from Search Console.

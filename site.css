@@ -298,3 +298,8 @@ body.story-open{overflow:hidden}
 /* Raise the story download control while keeping it at the lower right. */
 .story-screen-download{bottom:max(88px,env(safe-area-inset-bottom))}
 @media(max-width:760px){.story-screen-download{bottom:max(74px,env(safe-area-inset-bottom))}}
+
+/* Center the story download control beside the poster. */
+.story-screen-download{top:50%;bottom:auto;transform:translateY(-50%)}
+.story-screen-download:hover,.story-screen-download:focus-visible{transform:translateY(calc(-50% - 1px))}
+@media(max-width:760px){.story-screen-download{top:50%;bottom:auto;transform:translateY(-50%)}.story-screen-download:hover,.story-screen-download:focus-visible{transform:translateY(calc(-50% - 1px))}}

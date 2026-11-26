@@ -82,20 +82,20 @@ async function initArticle(){
 }
 
 const expertiseDescriptions={
- clinic:'Klinik psikoloji alanındaki bilimsel yaklaşımı ve uygulamaları öğrenmeye yönelik akademik ilgi. Bu başlık, sitede klinik destek ya da terapi hizmeti sunulduğu anlamına gelmez.',
- relationships:'İnsan ilişkileri, iletişim ve destek süreçlerine dair bilgi ve farkındalığı geliştirmeye yönelik çalışma başlığı.',
- operations:'Randevu ve klinik işleyiş süreçlerinin düzenli, özenli ve gizliliğe dikkat eden biçimde yürütülmesine ilişkin idari ilgi alanı.',
- coordination:'Uzmanlar ve başvuran kişiler arasındaki iletişim akışının açık, saygılı ve düzenli olmasını destekleyen koordinasyon başlığı.',
- records:'Kayıt ve dosya süreçlerinde düzen, dikkat ve gizlilik ilkelerinin önemini ele alan idari çalışma başlığı.',
- admin:'İdari destek ve raporlama süreçlerinde bilgiyi anlaşılır biçimde düzenleme ve iş akışına katkı sunma alanı.',
- writing:'Psikoloji bilgisini Türkçe ve İngilizce olarak anlaşılır, özenli ve kaynaklara dayalı içeriklere dönüştürme çalışması.',
- evidence:'Ruh sağlığı alanındaki içerikleri güvenilir bilimsel kaynaklar ve güncel kanıtlar ışığında değerlendirme yaklaşımı.',
- content:'Blog ve sosyal medya için eğitici, kolay anlaşılır ve sorumlu içerikler hazırlama; farklı formatlarda bilgiyi erişilebilir kılma çalışması.',
- emdr:'EMDR yaklaşımına ilişkin sertifikalı modül eğitimi kapsamında edinilen kuramsal bilgi ve mesleki gelişim.',
- cbt:'Bilişsel davranışçı terapi (BDT) yaklaşımına ilişkin sertifikalı modül eğitimi kapsamında edinilen kuramsal bilgi ve mesleki gelişim.',
- sport:'Spor psikolojisi alanındaki sertifikalı modül eğitimiyle edinilen bilgi ve psikolojinin farklı uygulama alanlarını tanıma.',
- art:'Sanat terapisi alanındaki sertifikalı modül eğitimiyle edinilen bilgi ve yaratıcı ifade yaklaşımlarını tanıma.',
- sex:'Cinsel terapi alanındaki sertifikalı modül eğitimiyle edinilen bilgi ve alanın etik, bilimsel çerçevesini öğrenme.'
+ clinic:'Klinik psikoloji, duygu, düşünce ve davranış örüntülerini bilimsel yöntemlerle anlamaya; ruh sağlığı ve iyi oluşla ilgili konuları araştırma, değerlendirme ve uygun uzmanlık kapsamında ele almaya odaklanan psikoloji alanıdır. Bu sitedeki başlık eğitim ve ilgi alanını tanıtır.',
+ relationships:'Danışan ve hasta ilişkilerinde güven, saygı, açık iletişim ve kişinin sınırlarına özen temel unsurlardır. Bu başlık, psikoloji ve sağlık ortamlarında destekleyici ve etik iletişim kurmanın önemini kapsar.',
+ operations:'Randevu planlama ve klinik operasyonlar; başvuru, takvim ve günlük iş akışlarının düzenli yürütülmesini içerir. Amaç, hizmet süreçlerinin anlaşılır ve koordineli işlemesine katkı sağlamaktır.',
+ coordination:'İletişim koordinasyonu, psikolog ile başvuran kişi arasındaki bilgi akışının açık ve düzenli tutulmasına yardımcı olur. Gizlilik, doğru bilgilendirme ve rol sınırlarına saygı bu süreçte önem taşır.',
+ records:'Klinik kayıt ve dosya yönetimi; belgelerin doğru, düzenli ve erişim sınırlarına uygun biçimde tutulmasını kapsar. Kişisel ve sağlık bilgilerinin gizliliğini korumak bu alanın temel sorumluluklarındandır.',
+ admin:'İdari destek ve rapor hazırlama; bilgileri düzenlemek, iş akışlarını takip etmek ve gerekli raporları anlaşılır biçimde hazırlamak gibi görevleri içerir. Dikkat ve tutarlılık gerektiren bir çalışma alanıdır.',
+ writing:'Psikoloji içerik yazarlığı, psikoloji kavramlarını hedef kitlenin anlayabileceği bir dille ve güvenilir kaynaklara dayanarak anlatmayı amaçlar. Türkçe ve İngilizce yazım, anlamı koruyarak açık ve özenli aktarım gerektirir.',
+ evidence:'Kanıta dayalı ruh sağlığı içerikleri; bilimsel araştırma ve güvenilir kaynaklardaki bilgileri dikkatle değerlendirerek hazırlar. Bulguların sınırlarını korumak ve kesinlik izlenimi vermemek, sorumlu bilgilendirmenin parçasıdır.',
+ content:'Blog ve sosyal medya içerik üretimi, psikoloji bilgisini kısa yazı, eğitici gönderi ve video gibi formatlara uyarlar. Bilginin doğruluğunu ve bağlamını korurken sade ve erişilebilir bir anlatım kurmayı hedefler.',
+ emdr:'EMDR, rahatsız edici anılarla çalışırken kişinin anıyı ele almasına ve eş zamanlı çift yönlü uyarım uygulanmasına dayanan yapılandırılmış bir psikoterapi yaklaşımıdır. Uygulama, ilgili eğitim ve mesleki yetkinlik çerçevesinde yürütülür.',
+ cbt:'Bilişsel davranışçı terapi (BDT), düşünce, duygu ve davranışların birbirleriyle ilişkisini ele alan; kişinin zorlayıcı düşünce ve davranış örüntülerini fark etmesine ve işlevsel alternatifler geliştirmesine yardımcı olmayı amaçlayan yapılandırılmış bir terapi yaklaşımıdır.',
+ sport:'Spor psikolojisi; spor ve egzersiz bağlamında motivasyon, dikkat, performans, takım ilişkileri ve psikolojik iyi oluş gibi konuları inceler. Araştırma ve uygulama alanı sporcuların yanı sıra antrenör ve takımları da kapsayabilir.',
+ art:'Sanat terapisi, sanat yapma sürecini duygu ve deneyimleri ifade etme ve keşfetme amacıyla kullanan bir psikoterapi alanıdır. Üretilecek eserin estetik niteliğinden çok, kişinin süreçteki deneyimi ve anlamı önem taşır.',
+ sex:'Cinsel terapi, cinsel işlev ve yakınlıkla ilgili güçlükleri kişinin ihtiyaçları ve klinik değerlendirme doğrultusunda ele alan psikoterapi temelli bir çalışma alanıdır. Uygulama, ilgili uzmanlık eğitimi, etik ilkeler ve mesleki yetkinlik gerektirir.'
 };
 function splitExpertiseModules(areas){
  return (areas||[]).flatMap(area=>{
@@ -104,6 +104,10 @@ function splitExpertiseModules(areas){
   const modules=value.split(':').slice(1).join(':').replace(/[()]/g,'').split(',').map(x=>x.trim()).filter(Boolean);
   return modules.map(module=>module+' eğitimi');
  });
+}
+function titleCaseExpertise(area){
+ const value=String(area||'').trim();
+ return value?value.charAt(0).toLocaleUpperCase('tr')+value.slice(1):value;
 }
 function describeExpertise(area){
  const text=String(area||'').toLocaleLowerCase('tr');
@@ -121,13 +125,13 @@ function describeExpertise(area){
  if(text.includes('kanıta dayalı'))return expertiseDescriptions.evidence;
  if(text.includes('blog')||text.includes('sosyal medya'))return expertiseDescriptions.content;
  if(text.includes('içerik yazarlığı'))return expertiseDescriptions.writing;
- return 'Psikoloji alanındaki bilgi ve mesleki gelişimi destekleyen; eğitim, araştırma ve içerik üretimi çerçevesinde ele alınan bir çalışma başlığı.';
+ return 'Psikoloji alanındaki çalışma başlığının kapsamını ve günlük uygulama içindeki yerini tanımaya yönelik genel bir başlıktır.';
 }
 async function initAreasPage(){
  const page=$('#areasPage');if(!page)return;
  const publicProfile=await readProfile();
  const areaList=$('#expertiseCards'),areas=splitExpertiseModules(publicProfile.expertise||[]);
- if(areaList)areaList.innerHTML=areas.length?areas.map((area,index)=>'<article class="card expertise-card"><div class="card-content"><div class="card-tag">ÇALIŞMA BAŞLIĞI '+String(index+1).padStart(2,'0')+'</div><h3>'+esc(area)+'</h3><p class="expertise-description">'+esc(describeExpertise(area))+'</p></div></article>').join(''):'<p class="muted">Çalışma başlıkları henüz eklenmedi.</p>';
+ if(areaList)areaList.innerHTML=areas.length?areas.map((area,index)=>'<article class="card expertise-card"><div class="card-content"><div class="card-tag">ÇALIŞMA BAŞLIĞI '+String(index+1).padStart(2,'0')+'</div><h3>'+esc(titleCaseExpertise(area))+'</h3><p class="expertise-description">'+esc(describeExpertise(area))+'</p></div></article>').join(''):'<p class="muted">Çalışma başlıkları henüz eklenmedi.</p>';
  const year=$('#year');if(year)year.textContent=new Date().getFullYear()
 }
 function slugify(text){return text.toLocaleLowerCase('tr').replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}

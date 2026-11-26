@@ -135,28 +135,28 @@ async function createStoryBlob(article){
  await document.fonts.ready;
  const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1920;
  const ctx=canvas.getContext('2d'),imageUrl=safeExternalUrl(article.image_url),image=await storyLoadImage(imageUrl);
- const base=ctx.createLinearGradient(0,0,1080,1920);base.addColorStop(0,'#321c29');base.addColorStop(.55,'#160f15');base.addColorStop(1,'#3b1b2b');ctx.fillStyle=base;ctx.fillRect(0,0,1080,1920);
- if(image){ctx.save();ctx.filter='blur(42px) brightness(.48) saturate(.78)';storyCover(ctx,image,-75,-75,1230,2070,0);ctx.restore()}
- const shade=ctx.createLinearGradient(0,0,0,1920);shade.addColorStop(0,'rgba(18,10,16,.38)');shade.addColorStop(.38,'rgba(18,10,16,.26)');shade.addColorStop(.68,'rgba(18,10,16,.50)');shade.addColorStop(1,'rgba(15,8,14,.66)');ctx.fillStyle=shade;ctx.fillRect(0,0,1080,1920);
- const vignette=ctx.createRadialGradient(540,850,280,540,850,1060);vignette.addColorStop(0,'rgba(8,5,10,0)');vignette.addColorStop(1,'rgba(8,5,10,.42)');ctx.fillStyle=vignette;ctx.fillRect(0,0,1080,1920);
- drawStoryLogo(ctx,142,135,86);
- ctx.textAlign='left';ctx.fillStyle='#e4bac5';ctx.font='600 18px "DM Sans",Arial,sans-serif';ctx.fillText('PSİKOLOG',202,124);
- ctx.fillStyle='#fff5f1';ctx.font='500 30px "Playfair Display",Georgia,serif';ctx.fillText('Beyza Nur Ömültay',202,164);
- ctx.textAlign='center';ctx.fillStyle='#f0c0cb';ctx.font='600 22px "DM Sans",Arial,sans-serif';
- ctx.fillText(String(article.category||(article.is_short?'KISA NOT':'PSİKOLOJİ')).toLocaleUpperCase('tr-TR'),540,765,900);
- ctx.fillStyle='rgba(255,240,241,.82)';ctx.fillRect(420,800,240,2);
- const title=String(article.title||'');
- let titleSize=76;ctx.fillStyle='#fff8f5';ctx.textAlign='center';ctx.shadowColor='rgba(10,5,10,.74)';ctx.shadowBlur=20;ctx.shadowOffsetY=5;
- ctx.font='500 '+titleSize+'px "Playfair Display",Georgia,serif';
- while(ctx.measureText(title).width>900&&titleSize>26){titleSize-=2;ctx.font='500 '+titleSize+'px "Playfair Display",Georgia,serif'}
- ctx.fillText(title,540,892,900);ctx.shadowBlur=0;ctx.shadowOffsetY=0;
- ctx.fillStyle='#fff4f1';ctx.font='400 36px "DM Sans",Arial,sans-serif';
- storyWrap(ctx,article.description||article.body||'',540,976,860,52,7);
- const date=storyFormatDate(article);
- ctx.textAlign='left';ctx.strokeStyle='rgba(255,240,241,.62)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(104,1635);ctx.lineTo(976,1635);ctx.stroke();
- ctx.fillStyle='#f0c2ce';ctx.font='500 23px "DM Sans",Arial,sans-serif';ctx.fillText(date,106,1694);
- ctx.fillStyle='#fff7f4';ctx.font='500 31px "Playfair Display",Georgia,serif';ctx.fillText('Psikolog Beyza Nur Ömültay',106,1752,700);
- ctx.textAlign='right';ctx.fillStyle='#f3d5dc';ctx.font='700 38px "Cormorant Garamond",Georgia,serif';ctx.shadowColor='rgba(238,157,178,.62)';ctx.shadowBlur=16;ctx.fillText('H.P.R',975,1810);ctx.shadowBlur=0;ctx.textAlign='left';
+ const base=ctx.createLinearGradient(0,0,1080,1920);base.addColorStop(0,'#321b28');base.addColorStop(.48,'#171017');base.addColorStop(1,'#431b30');ctx.fillStyle=base;ctx.fillRect(0,0,1080,1920);
+ if(image){ctx.save();ctx.filter='blur(42px) brightness(.42) saturate(1.08)';storyCover(ctx,image,-75,-75,1230,2070,0);ctx.restore()}
+ const tint=ctx.createLinearGradient(0,0,1080,1920);tint.addColorStop(0,'rgba(78,18,48,.35)');tint.addColorStop(.45,'rgba(23,12,20,.43)');tint.addColorStop(1,'rgba(18,9,17,.68)');ctx.fillStyle=tint;ctx.fillRect(0,0,1080,1920);
+ const vignette=ctx.createRadialGradient(540,890,280,540,890,1080);vignette.addColorStop(0,'rgba(8,4,9,.02)');vignette.addColorStop(1,'rgba(7,3,8,.56)');ctx.fillStyle=vignette;ctx.fillRect(0,0,1080,1920);
+ ctx.save();ctx.shadowColor='rgba(244,153,182,.84)';ctx.shadowBlur=66;ctx.fillStyle='rgba(32,17,27,.66)';ctx.beginPath();ctx.roundRect(78,108,924,1704,36);ctx.fill();ctx.restore();
+ ctx.strokeStyle='rgba(250,210,220,.8)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(78,108,924,1704,36);ctx.stroke();
+ ctx.strokeStyle='rgba(247,185,201,.3)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(92,122,896,1676,28);ctx.stroke();
+ drawStoryLogo(ctx,162,210,82);
+ ctx.textAlign='left';ctx.fillStyle='#e8c4cd';ctx.font='600 17px "DM Sans",Arial,sans-serif';ctx.fillText('PSİKOLOG',220,195);
+ ctx.fillStyle='#fff5f1';ctx.font='500 29px "Playfair Display",Georgia,serif';ctx.fillText('Beyza Nur Ömültay',220,235);
+ storyCover(ctx,image,148,286,784,716,24);
+ if(image){const imgShade=ctx.createLinearGradient(0,780,0,1002);imgShade.addColorStop(0,'rgba(14,7,13,0)');imgShade.addColorStop(1,'rgba(14,7,13,.34)');ctx.fillStyle=imgShade;ctx.fillRect(148,780,784,222)}
+ ctx.textAlign='center';ctx.fillStyle='#efb4c0';ctx.font='700 21px "DM Sans",Arial,sans-serif';ctx.fillText(String(article.category||(article.is_short?'KISA NOT':'PSİKOLOJİ')).toLocaleUpperCase('tr-TR'),540,1082,820);
+ ctx.fillStyle='#fff8f6';ctx.shadowColor='rgba(6,3,8,.76)';ctx.shadowBlur=18;
+ const title=String(article.title||'');let titleSize=75;ctx.font='500 '+titleSize+'px "Playfair Display",Georgia,serif';
+ while(ctx.measureText(title).width>830&&titleSize>25){titleSize-=2;ctx.font='500 '+titleSize+'px "Playfair Display",Georgia,serif'}
+ ctx.fillText(title,540,1190,830);ctx.shadowBlur=0;
+ ctx.fillStyle='#f0e3e6';ctx.font='400 32px "DM Sans",Arial,sans-serif';storyWrap(ctx,article.description||article.body||'',540,1265,800,46,5);
+ ctx.strokeStyle='rgba(245,202,213,.44)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(146,1602);ctx.lineTo(934,1602);ctx.stroke();
+ ctx.textAlign='left';ctx.fillStyle='#edc0cb';ctx.font='500 22px "DM Sans",Arial,sans-serif';ctx.fillText(storyFormatDate(article),150,1660);
+ ctx.fillStyle='#fff6f2';ctx.font='500 29px "Playfair Display",Georgia,serif';ctx.fillText('Psikolog Beyza Nur Ömültay',150,1722,690);
+ ctx.textAlign='right';ctx.fillStyle='#f5d8df';ctx.font='700 37px "Cormorant Garamond",Georgia,serif';ctx.shadowColor='rgba(236,149,173,.8)';ctx.shadowBlur=17;ctx.fillText('H.P.R',930,1775);ctx.shadowBlur=0;ctx.textAlign='left';
  return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve({blob,imageIncluded:!!image}):reject(new Error('Story görseli oluşturulamadı.')),'image/png'))
 }
 function initStoryMode(){

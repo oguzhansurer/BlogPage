@@ -72,7 +72,7 @@ function updateArticleSeo(article){
 }
 async function initArticle(){
  const target=$('#articleView');if(!target)return;
- const slug=new URLSearchParams(location.search).get('id')||decodeURIComponent(location.pathname.match(/^\\/makale\\/([^/]+)/)?.[1]||'');
+ const slug=new URLSearchParams(location.search).get('id')||decodeURIComponent(location.pathname.match(/^\/makale\/([^/]+)/)?.[1]||'');
  let article=articles.find(x=>x.slug===slug);
  if(db){const {data}=await db.from('articles').select('*').eq('slug',slug).eq('published',true).maybeSingle();if(data)article=data}
  if(article){updateArticleSeo(article);storyItems.set(String(article.slug),article)}

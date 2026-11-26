@@ -145,23 +145,25 @@ async function createStoryBlob(article){
  if(image){ctx.save();ctx.filter='blur(42px) brightness(.42) saturate(1.08)';storyCover(ctx,image,-75,-75,1230,2070,0);ctx.restore()}
  const tint=ctx.createLinearGradient(0,0,1080,1920);tint.addColorStop(0,'rgba(78,18,48,.35)');tint.addColorStop(.45,'rgba(23,12,20,.43)');tint.addColorStop(1,'rgba(18,9,17,.68)');ctx.fillStyle=tint;ctx.fillRect(0,0,1080,1920);
  const vignette=ctx.createRadialGradient(540,890,280,540,890,1080);vignette.addColorStop(0,'rgba(8,4,9,.02)');vignette.addColorStop(1,'rgba(7,3,8,.56)');ctx.fillStyle=vignette;ctx.fillRect(0,0,1080,1920);
- ctx.save();ctx.shadowColor='rgba(244,153,182,.84)';ctx.shadowBlur=66;ctx.fillStyle='rgba(32,17,27,.66)';ctx.beginPath();ctx.roundRect(78,108,924,1704,36);ctx.fill();ctx.restore();
- ctx.strokeStyle='rgba(250,210,220,.8)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(78,108,924,1704,36);ctx.stroke();
+ ctx.save();ctx.beginPath();ctx.roundRect(78,108,924,1704,36);ctx.clip();
+ if(image){ctx.save();ctx.filter='blur(34px) brightness(.48) saturate(1.12)';storyCover(ctx,image,48,78,984,1764,0);ctx.restore()}
+ else{const cardBase=ctx.createLinearGradient(78,108,1002,1812);cardBase.addColorStop(0,'#603044');cardBase.addColorStop(1,'#21151e');ctx.fillStyle=cardBase;ctx.fillRect(78,108,924,1704)}
+ const cardShade=ctx.createLinearGradient(78,108,1002,1812);cardShade.addColorStop(0,'rgba(28,10,20,.48)');cardShade.addColorStop(.52,'rgba(17,8,15,.56)');cardShade.addColorStop(1,'rgba(12,6,12,.72)');ctx.fillStyle=cardShade;ctx.fillRect(78,108,924,1704);
+ const cardVignette=ctx.createRadialGradient(540,850,240,540,850,900);cardVignette.addColorStop(0,'rgba(15,6,12,.06)');cardVignette.addColorStop(1,'rgba(8,3,8,.42)');ctx.fillStyle=cardVignette;ctx.fillRect(78,108,924,1704);ctx.restore();
+ ctx.save();ctx.shadowColor='rgba(244,153,182,.84)';ctx.shadowBlur=66;ctx.strokeStyle='rgba(250,210,220,.8)';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(78,108,924,1704,36);ctx.stroke();ctx.restore();
  ctx.strokeStyle='rgba(247,185,201,.3)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(92,122,896,1676,28);ctx.stroke();
  drawStoryLogo(ctx,162,210,82);
  ctx.textAlign='left';ctx.fillStyle='#e8c4cd';ctx.font='600 17px "DM Sans",Arial,sans-serif';ctx.fillText('PSİKOLOG',220,195);
  ctx.fillStyle='#fff5f1';ctx.font='500 29px "Playfair Display",Georgia,serif';ctx.fillText('Beyza Nur Ömültay',220,235);
- storyCover(ctx,image,148,286,784,716,24);
- if(image){const imgShade=ctx.createLinearGradient(0,780,0,1002);imgShade.addColorStop(0,'rgba(14,7,13,0)');imgShade.addColorStop(1,'rgba(14,7,13,.34)');ctx.fillStyle=imgShade;ctx.fillRect(148,780,784,222)}
- ctx.textAlign='center';ctx.fillStyle='#efb4c0';ctx.font='700 21px "DM Sans",Arial,sans-serif';ctx.fillText(String(article.category||(article.is_short?'KISA NOT':'PSİKOLOJİ')).toLocaleUpperCase('tr-TR'),540,1082,820);
- ctx.fillStyle='#fff8f6';ctx.shadowColor='rgba(6,3,8,.76)';ctx.shadowBlur=18;
- const title=String(article.title||'');let titleSize=75;ctx.font='500 '+titleSize+'px "Playfair Display",Georgia,serif';
- while(ctx.measureText(title).width>830&&titleSize>25){titleSize-=2;ctx.font='500 '+titleSize+'px "Playfair Display",Georgia,serif'}
- ctx.fillText(title,540,1190,830);ctx.shadowBlur=0;
- ctx.fillStyle='#f0e3e6';ctx.font='400 32px "DM Sans",Arial,sans-serif';storyWrap(ctx,article.description||article.body||'',540,1265,800,46,5);
- ctx.strokeStyle='rgba(245,202,213,.44)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(146,1602);ctx.lineTo(934,1602);ctx.stroke();
- ctx.textAlign='left';ctx.fillStyle='#edc0cb';ctx.font='500 22px "DM Sans",Arial,sans-serif';ctx.fillText(storyFormatDate(article),150,1660);
- ctx.fillStyle='#fff6f2';ctx.font='500 29px "Playfair Display",Georgia,serif';ctx.fillText('Psikolog Beyza Nur Ömültay',150,1722,690);
+ ctx.textAlign='center';ctx.fillStyle='#efb4c0';ctx.font='700 21px "DM Sans",Arial,sans-serif';ctx.fillText(String(article.category||(article.is_short?'KISA NOT':'PSİKOLOJİ')).toLocaleUpperCase('tr-TR'),540,790,820);
+ ctx.fillStyle='#fff8f6';ctx.shadowColor='rgba(6,3,8,.9)';ctx.shadowBlur=22;
+ const title=String(article.title||'');let titleSize=80;ctx.font='italic 700 '+titleSize+'px "Playfair Display",Georgia,serif';
+ while(ctx.measureText(title).width>830&&titleSize>25){titleSize-=2;ctx.font='italic 700 '+titleSize+'px "Playfair Display",Georgia,serif'}
+ ctx.fillText(title,540,920,830);ctx.shadowBlur=0;
+ ctx.fillStyle='#f0e3e6';ctx.font='400 32px "DM Sans",Arial,sans-serif';storyWrap(ctx,article.description||article.body||'',540,1000,800,48,7);
+ ctx.strokeStyle='rgba(245,202,213,.48)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(146,1570);ctx.lineTo(934,1570);ctx.stroke();
+ ctx.textAlign='left';ctx.fillStyle='#edc0cb';ctx.font='500 22px "DM Sans",Arial,sans-serif';ctx.fillText(storyFormatDate(article),150,1630);
+ ctx.fillStyle='#fff6f2';ctx.font='500 29px "Playfair Display",Georgia,serif';ctx.fillText('Psikolog Beyza Nur Ömültay',150,1692,690);
  ctx.textAlign='right';ctx.fillStyle='#f5d8df';ctx.font='700 37px "Cormorant Garamond",Georgia,serif';ctx.shadowColor='rgba(236,149,173,.8)';ctx.shadowBlur=17;ctx.fillText('H.P.R',930,1775);ctx.shadowBlur=0;ctx.textAlign='left';
  return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve({blob,imageIncluded:!!image}):reject(new Error('Story görseli oluşturulamadı.')),'image/png'))
 }

@@ -81,22 +81,53 @@ async function initArticle(){
  document.querySelectorAll('.year').forEach(x=>x.textContent=new Date().getFullYear())
 }
 
-const expertiseDescriptions=[
- 'Psikolojik süreçleri bilimsel kaynaklar ve güncel araştırmalar ışığında takip etmeye yönelik akademik ilgi.',
- 'Psikoloji bilgisini anlaşılır, kaynaklı ve gündelik yaşama dokunan içeriklere dönüştürme çalışmaları.',
- 'Psikoloji alanındaki lisansüstü eğitim ve mesleki gelişim sürecinde derinleşen konu başlıkları.'
-];
-function describeExpertise(area,index){
+const expertiseDescriptions={
+ clinic:'Klinik psikoloji alanındaki bilimsel yaklaşımı ve uygulamaları öğrenmeye yönelik akademik ilgi. Bu başlık, sitede klinik destek ya da terapi hizmeti sunulduğu anlamına gelmez.',
+ relationships:'İnsan ilişkileri, iletişim ve destek süreçlerine dair bilgi ve farkındalığı geliştirmeye yönelik çalışma başlığı.',
+ operations:'Randevu ve klinik işleyiş süreçlerinin düzenli, özenli ve gizliliğe dikkat eden biçimde yürütülmesine ilişkin idari ilgi alanı.',
+ coordination:'Uzmanlar ve başvuran kişiler arasındaki iletişim akışının açık, saygılı ve düzenli olmasını destekleyen koordinasyon başlığı.',
+ records:'Kayıt ve dosya süreçlerinde düzen, dikkat ve gizlilik ilkelerinin önemini ele alan idari çalışma başlığı.',
+ admin:'İdari destek ve raporlama süreçlerinde bilgiyi anlaşılır biçimde düzenleme ve iş akışına katkı sunma alanı.',
+ writing:'Psikoloji bilgisini Türkçe ve İngilizce olarak anlaşılır, özenli ve kaynaklara dayalı içeriklere dönüştürme çalışması.',
+ evidence:'Ruh sağlığı alanındaki içerikleri güvenilir bilimsel kaynaklar ve güncel kanıtlar ışığında değerlendirme yaklaşımı.',
+ content:'Blog ve sosyal medya için eğitici, kolay anlaşılır ve sorumlu içerikler hazırlama; farklı formatlarda bilgiyi erişilebilir kılma çalışması.',
+ emdr:'EMDR yaklaşımına ilişkin sertifikalı modül eğitimi kapsamında edinilen kuramsal bilgi ve mesleki gelişim.',
+ cbt:'Bilişsel davranışçı terapi (BDT) yaklaşımına ilişkin sertifikalı modül eğitimi kapsamında edinilen kuramsal bilgi ve mesleki gelişim.',
+ sport:'Spor psikolojisi alanındaki sertifikalı modül eğitimiyle edinilen bilgi ve psikolojinin farklı uygulama alanlarını tanıma.',
+ art:'Sanat terapisi alanındaki sertifikalı modül eğitimiyle edinilen bilgi ve yaratıcı ifade yaklaşımlarını tanıma.',
+ sex:'Cinsel terapi alanındaki sertifikalı modül eğitimiyle edinilen bilgi ve alanın etik, bilimsel çerçevesini öğrenme.'
+};
+function splitExpertiseModules(areas){
+ return (areas||[]).flatMap(area=>{
+  const value=String(area||'');
+  if(!/terapi yaklaşımları/i.test(value))return [value];
+  const modules=value.split(':').slice(1).join(':').replace(/[()]/g,'').split(',').map(x=>x.trim()).filter(Boolean);
+  return modules.map(module=>module+' eğitimi');
+ });
+}
+function describeExpertise(area){
  const text=String(area||'').toLocaleLowerCase('tr');
- if(/eğitim|içerik|yaz|akadem|araştır/.test(text))return expertiseDescriptions[1];
- if(/duygu|şefkat|farkındalık|ilişki|iletişim/.test(text))return 'Bu başlık, psikoloji literatürünü izleme ve kavramları gündelik yaşam bağlamında ele alma ilgisini ifade eder.';
- return expertiseDescriptions[index%expertiseDescriptions.length];
+ if(text.includes('emdr'))return expertiseDescriptions.emdr;
+ if(text.includes('bilişsel')||text.includes('bdt'))return expertiseDescriptions.cbt;
+ if(text.includes('spor'))return expertiseDescriptions.sport;
+ if(text.includes('sanat'))return expertiseDescriptions.art;
+ if(text.includes('cinsel terapi'))return expertiseDescriptions.sex;
+ if(text.includes('klinik psikoloji'))return expertiseDescriptions.clinic;
+ if(text.includes('danışan')||text.includes('hasta'))return expertiseDescriptions.relationships;
+ if(text.includes('randevu'))return expertiseDescriptions.operations;
+ if(text.includes('koordinasyon'))return expertiseDescriptions.coordination;
+ if(text.includes('kayıt')||text.includes('dosya'))return expertiseDescriptions.records;
+ if(text.includes('idari')||text.includes('rapor'))return expertiseDescriptions.admin;
+ if(text.includes('kanıta dayalı'))return expertiseDescriptions.evidence;
+ if(text.includes('blog')||text.includes('sosyal medya'))return expertiseDescriptions.content;
+ if(text.includes('içerik yazarlığı'))return expertiseDescriptions.writing;
+ return 'Psikoloji alanındaki bilgi ve mesleki gelişimi destekleyen; eğitim, araştırma ve içerik üretimi çerçevesinde ele alınan bir çalışma başlığı.';
 }
 async function initAreasPage(){
  const page=$('#areasPage');if(!page)return;
  const publicProfile=await readProfile();
- const areaList=$('#expertiseCards'),areas=publicProfile.expertise||[];
- if(areaList)areaList.innerHTML=areas.length?areas.map((area,index)=>'<article class="card expertise-card"><div class="card-content"><div class="card-tag">ÇALIŞMA BAŞLIĞI '+String(index+1).padStart(2,'0')+'</div><h3>'+esc(area)+'</h3><p class="expertise-description">'+esc(describeExpertise(area,index))+'</p></div></article>').join(''):'<p class="muted">Çalışma başlıkları henüz eklenmedi.</p>';
+ const areaList=$('#expertiseCards'),areas=splitExpertiseModules(publicProfile.expertise||[]);
+ if(areaList)areaList.innerHTML=areas.length?areas.map((area,index)=>'<article class="card expertise-card"><div class="card-content"><div class="card-tag">ÇALIŞMA BAŞLIĞI '+String(index+1).padStart(2,'0')+'</div><h3>'+esc(area)+'</h3><p class="expertise-description">'+esc(describeExpertise(area))+'</p></div></article>').join(''):'<p class="muted">Çalışma başlıkları henüz eklenmedi.</p>';
  const year=$('#year');if(year)year.textContent=new Date().getFullYear()
 }
 function slugify(text){return text.toLocaleLowerCase('tr').replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}

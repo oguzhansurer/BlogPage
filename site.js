@@ -209,11 +209,16 @@ async function createStoryBlob(article){
  ctx.strokeStyle='rgba(247,185,201,.3)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(92,122,896,1676,28);ctx.stroke();
  drawStoryLogo(ctx,162,210,82);
  if(!article.is_short){
-  ctx.save();ctx.textAlign='center';
-  ctx.fillStyle='rgba(34,12,24,.72)';ctx.strokeStyle='rgba(247,185,201,.62)';ctx.lineWidth=2;
-  ctx.beginPath();ctx.roundRect(385,292,310,58,29);ctx.fill();ctx.stroke();
-  ctx.fillStyle='#fff0f3';ctx.font='600 22px "DM Sans",Arial,sans-serif';ctx.shadowColor='rgba(236,149,173,.72)';ctx.shadowBlur=12;
-  ctx.fillText('Makalem yayında',540,330);ctx.restore()
+  ctx.save();
+  const ribbon=ctx.createLinearGradient(260,0,820,0);ribbon.addColorStop(0,'#9e425d');ribbon.addColorStop(.5,'#c76e83');ribbon.addColorStop(1,'#8b344f');
+  ctx.shadowColor='rgba(12,4,10,.55)';ctx.shadowBlur=22;ctx.shadowOffsetY=8;
+  ctx.fillStyle='#64283d';ctx.beginPath();ctx.moveTo(260,294);ctx.lineTo(204,324);ctx.lineTo(260,354);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.moveTo(820,294);ctx.lineTo(876,324);ctx.lineTo(820,354);ctx.closePath();ctx.fill();
+  ctx.shadowOffsetY=0;ctx.shadowBlur=0;ctx.fillStyle=ribbon;ctx.strokeStyle='rgba(255,224,229,.88)';ctx.lineWidth=3;
+  ctx.beginPath();ctx.roundRect(246,270,588,108,13);ctx.fill();ctx.stroke();
+  ctx.strokeStyle='rgba(255,239,241,.42)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(257,281,566,86,8);ctx.stroke();
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff8f5';ctx.font='700 38px "DM Sans",Arial,sans-serif';ctx.shadowColor='rgba(48,11,27,.72)';ctx.shadowBlur=8;
+  ctx.fillText('Makalem yayında',540,324,520);ctx.restore();ctx.textBaseline='alphabetic'
  }
  ctx.textAlign='left';ctx.fillStyle='#e8c4cd';ctx.font='600 17px "DM Sans",Arial,sans-serif';ctx.fillText('PSİKOLOG',220,195);
  ctx.fillStyle='#fff5f1';ctx.font='500 29px "Playfair Display",Georgia,serif';ctx.fillText('Beyza Nur Ömültay',220,235);

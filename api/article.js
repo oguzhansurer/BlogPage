@@ -1,7 +1,7 @@
 const { readFileSync } = require('node:fs');
 const { join } = require('node:path');
 const { published, cache, escapeText, origin, cardFields } = require('../lib/published');
-const template = readFileSync(join(process.cwd(),'makale.html'),'utf8');
+const template = readFileSync(join(process.cwd(),'lib/article-template.html'),'utf8');
 const placeholder = '<article class="article-inner" id="articleView">';
 const back = '<a class="article-back" href="/makaleler">Makalelere dön</a>';
 

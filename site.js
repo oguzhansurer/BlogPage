@@ -209,20 +209,21 @@ async function createStoryBlob(article){
  ctx.strokeStyle='rgba(247,185,201,.3)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(92,122,896,1676,28);ctx.stroke();
  drawStoryLogo(ctx,162,210,82);
  if(!article.is_short){
-  ctx.save();
-  const shade=ctx.createLinearGradient(150,300,930,450);shade.addColorStop(0,'#4f1429');shade.addColorStop(.5,'#6f1c37');shade.addColorStop(1,'#4a1025');
-  const ribbon=ctx.createLinearGradient(220,290,860,430);ribbon.addColorStop(0,'#8d2946');ribbon.addColorStop(.48,'#a83d59');ribbon.addColorStop(1,'#74203b');
-  ctx.shadowColor='rgba(12,4,10,.58)';ctx.shadowBlur=24;ctx.shadowOffsetY=12;
-  ctx.fillStyle=shade;ctx.beginPath();ctx.moveTo(270,318);ctx.lineTo(168,286);ctx.lineTo(198,398);ctx.lineTo(294,370);ctx.closePath();ctx.fill();
-  ctx.beginPath();ctx.moveTo(810,318);ctx.lineTo(912,286);ctx.lineTo(882,398);ctx.lineTo(786,370);ctx.closePath();ctx.fill();
-  ctx.shadowBlur=0;ctx.shadowOffsetY=0;ctx.fillStyle=ribbon;ctx.strokeStyle='rgba(255,225,230,.82)';ctx.lineWidth=3;
-  ctx.beginPath();ctx.moveTo(246,294);ctx.quadraticCurveTo(540,377,834,294);ctx.lineTo(834,386);ctx.quadraticCurveTo(540,469,246,386);ctx.closePath();ctx.fill();ctx.stroke();
-  ctx.strokeStyle='rgba(255,222,228,.5)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(255,305);ctx.quadraticCurveTo(540,383,825,305);ctx.stroke();
-  ctx.fillStyle='rgba(54,12,27,.42)';ctx.beginPath();ctx.moveTo(168,286);ctx.lineTo(234,337);ctx.lineTo(198,398);ctx.closePath();ctx.fill();
-  ctx.beginPath();ctx.moveTo(912,286);ctx.lineTo(846,337);ctx.lineTo(882,398);ctx.closePath();ctx.fill();
-  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff8f5';ctx.font='700 38px "DM Sans",Arial,sans-serif';ctx.shadowColor='rgba(48,11,27,.78)';ctx.shadowBlur=9;
-  ctx.fillText('Makalem yayında',540,382,510);
-  ctx.save();ctx.translate(862,316);ctx.rotate(-Math.PI/7);ctx.font='76px "Apple Color Emoji","Segoe UI Emoji",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.shadowColor='rgba(45,8,24,.38)';ctx.shadowBlur=10;ctx.fillText('🎀',0,0);ctx.restore();
+  ctx.save();ctx.translate(872,250);ctx.rotate(-Math.PI/4);
+  const shade=ctx.createLinearGradient(-230,-40,230,50);shade.addColorStop(0,'#4f1429');shade.addColorStop(.5,'#6f1c37');shade.addColorStop(1,'#4a1025');
+  const ribbon=ctx.createLinearGradient(-210,-42,210,42);ribbon.addColorStop(0,'#8d2946');ribbon.addColorStop(.48,'#a83d59');ribbon.addColorStop(1,'#74203b');
+  ctx.shadowColor='rgba(12,4,10,.58)';ctx.shadowBlur=22;ctx.shadowOffsetY=10;
+  ctx.fillStyle=shade;ctx.beginPath();ctx.moveTo(-210,-31);ctx.lineTo(-264,-48);ctx.lineTo(-246,48);ctx.lineTo(-198,32);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.moveTo(210,-31);ctx.lineTo(264,-48);ctx.lineTo(246,48);ctx.lineTo(198,32);ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+  ctx.fillStyle=ribbon;ctx.strokeStyle='rgba(255,225,230,.84)';ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(-220,-44);ctx.quadraticCurveTo(0,-24,220,-44);ctx.lineTo(220,44);ctx.quadraticCurveTo(0,24,-220,44);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.strokeStyle='rgba(255,222,228,.52)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-211,-35);ctx.quadraticCurveTo(0,-15,211,-35);ctx.stroke();
+  ctx.fillStyle='rgba(54,12,27,.45)';ctx.beginPath();ctx.moveTo(-264,-48);ctx.lineTo(-216,0);ctx.lineTo(-246,48);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.moveTo(264,-48);ctx.lineTo(216,0);ctx.lineTo(246,48);ctx.closePath();ctx.fill();
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff8f5';ctx.font='700 32px "DM Sans",Arial,sans-serif';ctx.shadowColor='rgba(48,11,27,.78)';ctx.shadowBlur=8;
+  ctx.fillText('Makalem yayında',0,2,370);
+  ctx.save();ctx.translate(202,-20);ctx.rotate(-Math.PI/7);ctx.font='67px "Apple Color Emoji","Segoe UI Emoji",sans-serif';ctx.shadowColor='rgba(45,8,24,.42)';ctx.shadowBlur=8;ctx.fillText('🎀',0,0);ctx.restore();
   ctx.restore();ctx.textBaseline='alphabetic'
  }
  ctx.textAlign='left';ctx.fillStyle='#e8c4cd';ctx.font='600 17px "DM Sans",Arial,sans-serif';ctx.fillText('PSİKOLOG',220,195);

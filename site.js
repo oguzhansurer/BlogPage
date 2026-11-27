@@ -215,7 +215,10 @@ async function createStoryBlob(article){
   ctx.fillStyle='#64283d';ctx.beginPath();ctx.moveTo(260,294);ctx.lineTo(204,324);ctx.lineTo(260,354);ctx.closePath();ctx.fill();
   ctx.beginPath();ctx.moveTo(820,294);ctx.lineTo(876,324);ctx.lineTo(820,354);ctx.closePath();ctx.fill();
   ctx.shadowOffsetY=0;ctx.shadowBlur=0;ctx.fillStyle=ribbon;ctx.strokeStyle='rgba(255,224,229,.88)';ctx.lineWidth=3;
-  ctx.beginPath();ctx.roundRect(246,270,588,108,13);ctx.fill();ctx.stroke();
+  ctx.beginPath();ctx.roundRect(246,270,588,108,13);ctx.fill();
+  ctx.save();ctx.beginPath();ctx.roundRect(246,270,588,108,13);ctx.clip();ctx.fillStyle='rgba(255,235,239,.48)';
+  for(let row=0;row<4;row++){const y=286+row*25;for(let col=0;col<18;col++){const x=264+col*33+(row%2?16:0);ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill()}}
+  ctx.restore();ctx.stroke();
   ctx.strokeStyle='rgba(255,239,241,.42)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(257,281,566,86,8);ctx.stroke();
   ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff8f5';ctx.font='700 38px "DM Sans",Arial,sans-serif';ctx.shadowColor='rgba(48,11,27,.72)';ctx.shadowBlur=8;
   ctx.fillText('Makalem yayında',540,324,520);ctx.restore();ctx.textBaseline='alphabetic'

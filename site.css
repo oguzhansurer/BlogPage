@@ -328,3 +328,12 @@ body.story-open{overflow:hidden}
 #expertiseCards .expertise-card:hover h3,#expertiseCards .expertise-card:focus-within h3{transform:scale(.96)}
 #expertiseCards .expertise-card:hover .expertise-description,#expertiseCards .expertise-card:focus-within .expertise-description{max-height:180px;opacity:.9;visibility:visible;transform:translateY(0);margin:12px 0 0!important}
 @media(prefers-reduced-motion:reduce){#expertiseCards .expertise-card,#expertiseCards .expertise-card h3,#expertiseCards .expertise-description{transition:none}}
+
+/* Preserve complete uploaded images; softly fill unused space from the same image. */
+.image-fit-frame{position:relative;display:grid;place-items:center;isolation:isolate;overflow:hidden;background:#241820}
+.image-fit-blur{position:absolute;z-index:-1;inset:-5%;width:110%;height:110%;max-width:none;object-fit:cover;filter:blur(24px) brightness(.62) saturate(.85);opacity:.92}
+.card-image-frame{width:100%;height:220px;border-radius:16px 16px 0 0}
+.card-image-frame .card-cover{position:relative;z-index:0;width:100%;height:100%;object-fit:contain;background:transparent}
+.article-image-frame{width:100%;min-height:220px;max-height:min(76vh,760px);border:1px solid var(--line);border-radius:18px;margin:14px 0 26px}
+.article-image-frame .article-hero{position:relative;z-index:0;display:block;width:auto;height:auto;max-width:100%;max-height:min(76vh,760px);object-fit:contain;border:0;margin:0;background:transparent}
+@media(max-width:600px){.card-image-frame{height:190px}.article-image-frame{min-height:160px;max-height:70vh}.article-image-frame .article-hero{max-height:70vh}}

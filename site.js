@@ -149,6 +149,37 @@ function initAdmin(){const login=$('#loginForm');if(!login)return;const loginMsg
  $('#profileForm').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);const status=$('#profileMsg');status.textContent='Bilgiler kaydediliyor…';let cvUrl=profile.cv_pdf_url||null,cvPath=profile.cv_pdf_path||null,portraitUrl=profile.portrait_url||'',portraitPath=profile.portrait_path||'',newPortraitPath='';const portraitFile=f.get('portraitPhoto');if(portraitFile&&portraitFile.size){const allowed={'image/jpeg':'.jpg','image/png':'.png','image/webp':'.webp','image/avif':'.avif'};if(!allowed[portraitFile.type]){status.textContent='JPG, PNG, WebP veya AVIF biçiminde bir fotoğraf seç.';return}if(portraitFile.size>5*1024*1024){status.textContent='Fotoğraf dosyası 5 MB sınırını aşamaz.';return}const access=await ensureAdminStorageAccess();if(!access.ok){status.textContent=access.message;return}newPortraitPath='profile/portrait-'+Date.now()+allowed[portraitFile.type];const {error:portraitError}=await db.storage.from('blog-covers').upload(newPortraitPath,portraitFile,{contentType:portraitFile.type,upsert:false});if(portraitError){status.textContent='Fotoğraf yüklenemedi: '+portraitError.message;return}portraitUrl=db.storage.from('blog-covers').getPublicUrl(newPortraitPath).data.publicUrl+'?v='+Date.now();portraitPath=newPortraitPath}const pdf=f.get('cvPdf');if(pdf&&pdf.size){if(pdf.type!=='application/pdf'){status.textContent='Lütfen PDF dosyası seç.';if(newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);return}if(pdf.size>15*1024*1024){status.textContent='PDF dosyası 15 MB sınırını aşamaz.';if(newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);return}const access=await ensureAdminStorageAccess();if(!access.ok){status.textContent=access.message;if(newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);return}const nextPath='cv/ozgecmis-'+Date.now()+'.pdf';const {error:uploadError}=await db.storage.from('professional-cv').upload(nextPath,pdf,{contentType:'application/pdf',upsert:false});if(uploadError){status.textContent='PDF yüklenemedi: '+uploadError.message;if(newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);return}cvUrl=db.storage.from('professional-cv').getPublicUrl(nextPath).data.publicUrl;cvPath=nextPath}const values={id:1,about:f.get('about'),education:f.get('education').split('\n').filter(Boolean).map(line=>{const [year,...rest]=line.split('|').map(x=>x.trim());return{year:year||'',institution:rest.join(' | ')}}),expertise:f.get('expertise').split('\n').map(x=>x.trim()).filter(Boolean),contact_email:f.get('contactEmail').trim(),instagram_url:f.get('instagramUrl').trim(),linkedin_url:validLinkedInUrl(f.get('linkedinUrl').trim()),cv_pdf_url:cvUrl,cv_pdf_path:cvPath,portrait_url:portraitUrl,portrait_path:portraitPath,updated_at:new Date().toISOString()};const {error}=await db.from('site_profile').upsert(values,{onConflict:'id'});if(error&&newPortraitPath)await db.storage.from('blog-covers').remove([newPortraitPath]);status.textContent=error?'Bilgiler kaydedilemedi: '+error.message:'Bilgiler ve özgeçmiş PDF kaydedildi.';if(!error){if(profile.portrait_path&&portraitPath!==profile.portrait_path)await db.storage.from('blog-covers').remove([profile.portrait_path]);if(profile.cv_pdf_path&&cvPath!==profile.cv_pdf_path)await db.storage.from('professional-cv').remove([profile.cv_pdf_path]);await loadAdmin()}};
  $('#logout').onclick=async()=>{await db.auth.signOut();location.reload()};
 }
+
+function initMobileMenu() {
+  const header = document.querySelector('header.nav, header.adminbar');
+  if (!header) return;
+  const menu = document.createElement('details');
+  menu.className = 'mobile-menu';
+  menu.innerHTML = '<summary aria-label="Gezinme menüsü"><span></span><span></span><span></span></summary><nav aria-label="Mobil gezinme"></nav>';
+  const links = [
+    ['/', 'Ana sayfa'], ['/makaleler', 'Makaleler'], ['/kisa-notlar', 'Kısa Notlar'],
+    ['/#hakkimda', 'Hakkımda'], ['/ozgecmis', 'Özgeçmiş'],
+    ['/calisma-alanlari', 'Çalışma Alanları'], ['/#iletisim', 'İletişim']
+  ];
+  const nav = menu.querySelector('nav');
+  for (const [url, label] of links) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.textContent = label;
+    if (location.pathname + location.hash === url) link.setAttribute('aria-current', 'page');
+    nav.append(link);
+  }
+  header.append(menu);
+  const close = () => { menu.open = false; };
+  nav.addEventListener('click', close);
+  document.addEventListener('pointerdown', event => { if (menu.open && !menu.contains(event.target)) close(); });
+  document.addEventListener('focusin', event => { if (menu.open && !menu.contains(event.target)) close(); });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && menu.open) { close(); menu.querySelector('summary').focus(); }
+  });
+  matchMedia('(max-width: 860px)').addEventListener('change', close);
+}
+initMobileMenu();
 initHome();initArticlesPage();initArticle();initCvPage();initShortPage();initAreasPage();initAdmin();initParallax();initAdminBar();initStoryMode();
 function storyFormatDate(article){
  const value=article.created_at||article.updated_at;

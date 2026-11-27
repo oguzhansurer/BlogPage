@@ -221,7 +221,9 @@ async function createStoryBlob(article){
   ctx.fillStyle='rgba(54,12,27,.42)';ctx.beginPath();ctx.moveTo(168,286);ctx.lineTo(234,337);ctx.lineTo(198,398);ctx.closePath();ctx.fill();
   ctx.beginPath();ctx.moveTo(912,286);ctx.lineTo(846,337);ctx.lineTo(882,398);ctx.closePath();ctx.fill();
   ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff8f5';ctx.font='700 38px "DM Sans",Arial,sans-serif';ctx.shadowColor='rgba(48,11,27,.78)';ctx.shadowBlur=9;
-  ctx.fillText('Makalem yayında',540,382,510);ctx.restore();ctx.textBaseline='alphabetic'
+  ctx.fillText('Makalem yayında',540,382,510);
+  ctx.save();ctx.translate(862,316);ctx.rotate(-Math.PI/7);ctx.font='76px "Apple Color Emoji","Segoe UI Emoji",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.shadowColor='rgba(45,8,24,.38)';ctx.shadowBlur=10;ctx.fillText('🎀',0,0);ctx.restore();
+  ctx.restore();ctx.textBaseline='alphabetic'
  }
  ctx.textAlign='left';ctx.fillStyle='#e8c4cd';ctx.font='600 17px "DM Sans",Arial,sans-serif';ctx.fillText('PSİKOLOG',220,195);
  ctx.fillStyle='#fff5f1';ctx.font='500 29px "Playfair Display",Georgia,serif';ctx.fillText('Beyza Nur Ömültay',220,235);

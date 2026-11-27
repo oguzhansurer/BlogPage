@@ -192,6 +192,93 @@ function drawStoryLogo(ctx,x,y,size){
  ctx.beginPath();ctx.moveTo(x-size*.29,y+size*.27);ctx.bezierCurveTo(x-size*.22,y+size*.03,x+size*.22,y+size*.03,x+size*.29,y+size*.27);ctx.stroke();
  ctx.fillStyle='#fff0d8';ctx.beginPath();ctx.moveTo(x+size*.32,y-size*.34);ctx.lineTo(x+size*.35,y-size*.23);ctx.lineTo(x+size*.46,y-size*.20);ctx.lineTo(x+size*.35,y-size*.16);ctx.lineTo(x+size*.32,y-size*.05);ctx.lineTo(x+size*.29,y-size*.16);ctx.lineTo(x+size*.18,y-size*.20);ctx.lineTo(x+size*.29,y-size*.23);ctx.closePath();ctx.fill()
 }
+function drawPublicationRibbon(ctx) {
+  ctx.save();
+  ctx.translate(825,285);
+  ctx.rotate(Math.PI/4);
+
+  // The split ends sit behind the front band and turn under at each fold.
+  for (const side of [-1,1]) {
+    ctx.save();
+    ctx.scale(side,1);
+    const reverse = ctx.createLinearGradient(208,0,295,36);
+    reverse.addColorStop(0,'#21050e');
+    reverse.addColorStop(.68,'#55172a');
+    reverse.addColorStop(1,'#340b19');
+    ctx.fillStyle = reverse;
+    ctx.shadowColor = 'rgba(13,2,7,.55)';
+    ctx.shadowBlur = 9;
+    ctx.shadowOffsetY = 6;
+    ctx.beginPath();
+    ctx.moveTo(212,-29);
+    ctx.lineTo(295,-40);
+    ctx.lineTo(270,7);
+    ctx.lineTo(292,60);
+    ctx.lineTo(214,49);
+    ctx.closePath();
+    ctx.fill();
+    ctx.shadowBlur = ctx.shadowOffsetY = 0;
+    ctx.fillStyle = '#250611';
+    ctx.beginPath();
+    ctx.moveTo(238,-48);
+    ctx.lineTo(257,45);
+    ctx.lineTo(213,52);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  const face = new Path2D();
+  face.moveTo(-239,-52);
+  face.bezierCurveTo(-92,-74,76,-40,239,-52);
+  face.lineTo(253,45);
+  face.bezierCurveTo(95,65,-80,39,-253,54);
+  face.closePath();
+  const satin = ctx.createLinearGradient(-242,-38,244,36);
+  for (const [stop,color] of [[0,'#320817'],[.11,'#5e1830'],[.27,'#430b21'],[.55,'#590f28'],[.77,'#691e36'],[.92,'#400c20'],[1,'#2c0615']]) {
+    satin.addColorStop(stop,color);
+  }
+  ctx.fillStyle = satin;
+  ctx.shadowColor = 'rgba(16,3,9,.62)';
+  ctx.shadowBlur = 14;
+  ctx.shadowOffsetY = 7;
+  ctx.fill(face);
+  ctx.shadowBlur = ctx.shadowOffsetY = 0;
+  ctx.save();
+  ctx.clip(face);
+  const sheen = ctx.createLinearGradient(0,-62,-6,57);
+  sheen.addColorStop(0,'rgba(255,199,192,.20)');
+  sheen.addColorStop(.3,'rgba(236,161,161,.035)');
+  sheen.addColorStop(.72,'rgba(31,3,15,.07)');
+  sheen.addColorStop(1,'rgba(26,3,13,.44)');
+  ctx.fillStyle = sheen;
+  ctx.fillRect(-256,-74,512,145);
+  ctx.lineWidth = .7;
+  ctx.strokeStyle = 'rgba(250,198,193,.09)';
+  ctx.beginPath();
+  for (let y=-74; y<76; y+=3) {
+    ctx.moveTo(-254,y);
+    ctx.bezierCurveTo(-95,y-16,95,y+10,254,y-5);
+  }
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = '700 46px "Playfair Display",Georgia,serif';
+  ctx.fillStyle = '#fff2df';
+  ctx.shadowColor = 'rgba(27,3,13,.8)';
+  ctx.shadowBlur = 2;
+  ctx.shadowOffsetY = 2;
+  ctx.fillText('Makalem yayında',-10,-2,394);
+
+  ctx.translate(229,-20);
+  ctx.rotate(-Math.PI/7);
+  ctx.font = '61.64px "Apple Color Emoji","Segoe UI Emoji",sans-serif';
+  ctx.shadowBlur = 7;
+  ctx.fillText('🎀',0,0);
+  ctx.restore();
+}
 async function createStoryBlob(article){
  await document.fonts.ready;
  const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1920;
@@ -208,28 +295,7 @@ async function createStoryBlob(article){
  ctx.save();ctx.shadowColor='rgba(244,153,182,.84)';ctx.shadowBlur=66;ctx.strokeStyle='rgba(250,210,220,.8)';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(78,108,924,1704,36);ctx.stroke();ctx.restore();
  ctx.strokeStyle='rgba(247,185,201,.3)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(92,122,896,1676,28);ctx.stroke();
  drawStoryLogo(ctx,162,210,82);
- if(!article.is_short){
-  ctx.save();
-  // Bridge the top and right edges of the card, with room for both ribbon tails.
-  ctx.translate(855,255);
-  ctx.rotate(Math.PI/4);
-  ctx.scale(.92,.92);
-  const shade=ctx.createLinearGradient(-230,-40,230,50);shade.addColorStop(0,'#4f1429');shade.addColorStop(.5,'#6f1c37');shade.addColorStop(1,'#4a1025');
-  const ribbon=ctx.createLinearGradient(-210,-42,210,42);ribbon.addColorStop(0,'#8d2946');ribbon.addColorStop(.48,'#a83d59');ribbon.addColorStop(1,'#74203b');
-  ctx.shadowColor='rgba(12,4,10,.58)';ctx.shadowBlur=22;ctx.shadowOffsetY=10;
-  ctx.fillStyle=shade;ctx.beginPath();ctx.moveTo(-210,-31);ctx.lineTo(-264,-48);ctx.lineTo(-246,48);ctx.lineTo(-198,32);ctx.closePath();ctx.fill();
-  ctx.beginPath();ctx.moveTo(210,-31);ctx.lineTo(264,-48);ctx.lineTo(246,48);ctx.lineTo(198,32);ctx.closePath();ctx.fill();
-  ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-  ctx.fillStyle=ribbon;ctx.strokeStyle='rgba(255,225,230,.84)';ctx.lineWidth=3;
-  ctx.beginPath();ctx.moveTo(-220,-44);ctx.quadraticCurveTo(0,-24,220,-44);ctx.lineTo(220,44);ctx.quadraticCurveTo(0,24,-220,44);ctx.closePath();ctx.fill();ctx.stroke();
-  ctx.strokeStyle='rgba(255,222,228,.52)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-211,-35);ctx.quadraticCurveTo(0,-15,211,-35);ctx.stroke();
-  ctx.fillStyle='rgba(54,12,27,.45)';ctx.beginPath();ctx.moveTo(-264,-48);ctx.lineTo(-216,0);ctx.lineTo(-246,48);ctx.closePath();ctx.fill();
-  ctx.beginPath();ctx.moveTo(264,-48);ctx.lineTo(216,0);ctx.lineTo(246,48);ctx.closePath();ctx.fill();
-  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff8f5';ctx.font='700 32px "DM Sans",Arial,sans-serif';ctx.shadowColor='rgba(48,11,27,.78)';ctx.shadowBlur=8;
-  ctx.fillText('Makalem yayında',0,2,370);
-  ctx.save();ctx.translate(202,-20);ctx.rotate(-Math.PI/7);ctx.font='67px "Apple Color Emoji","Segoe UI Emoji",sans-serif';ctx.shadowColor='rgba(45,8,24,.42)';ctx.shadowBlur=8;ctx.fillText('🎀',0,0);ctx.restore();
-  ctx.restore();ctx.textBaseline='alphabetic'
- }
+ if(!article.is_short) drawPublicationRibbon(ctx);
  ctx.textAlign='left';ctx.fillStyle='#e8c4cd';ctx.font='600 17px "DM Sans",Arial,sans-serif';ctx.fillText('PSİKOLOG',220,195);
  ctx.fillStyle='#fff5f1';ctx.font='500 29px "Playfair Display",Georgia,serif';ctx.fillText('Beyza Nur Ömültay',220,235);
  ctx.textAlign='center';ctx.fillStyle='#efb4c0';ctx.font='700 21px "DM Sans",Arial,sans-serif';ctx.fillText(String(article.category||(article.is_short?'KISA NOT':'PSİKOLOJİ')).toLocaleUpperCase('tr-TR'),540,790,820);

@@ -270,7 +270,7 @@ function drawPublicationRibbon(ctx) {
   ctx.shadowColor = 'rgba(27,3,13,.8)';
   ctx.shadowBlur = 2;
   ctx.shadowOffsetY = 2;
-  ctx.fillText('Makalem yayında',-10,-2,394);
+  ctx.fillText('Şuan Yayında',-10,-2,394);
 
   ctx.translate(229,-20);
   ctx.rotate(-Math.PI/7);

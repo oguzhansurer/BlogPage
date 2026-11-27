@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "headers": [
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "headers": [
         {
           "key": "Content-Security-Policy",
@@ -61,8 +61,44 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
       "source": "/makale/:slug",
-      "destination": "/makale?id=:slug"
+      "destination": "/api/article?id=:slug"
+    },
+    {
+      "source": "/makale",
+      "destination": "/api/article"
     }
-  ]
+  ],
+  "images": {
+    "sizes": [
+      384,
+      640,
+      960
+    ],
+    "qualities": [
+      75
+    ],
+    "formats": [
+      "image/webp"
+    ],
+    "localPatterns": [],
+    "remotePatterns": [
+      {
+        "protocol": "https",
+        "hostname": "vcpktnjgvmhxucwwhame.supabase.co",
+        "port": "",
+        "pathname": "^/storage/v1/object/public/blog-covers/.*$"
+      }
+    ],
+    "minimumCacheTTL": 86400
+  },
+  "functions": {
+    "api/article.js": {
+      "includeFiles": "makale.html"
+    }
+  }
 }

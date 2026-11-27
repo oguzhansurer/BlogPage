@@ -1,0 +1,7 @@
+{
+  "name": "beyza-nur-blog",
+  "private": true,
+  "dependencies": {
+    "@vercel/functions": "3.11.4"
+  }
+}

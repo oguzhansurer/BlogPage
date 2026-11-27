@@ -390,3 +390,11 @@ body.story-open{overflow:hidden}
   #expertiseCards .expertise-card .expertise-description { max-height: none; opacity: 1; visibility: visible; transform: none; margin-top: 10px !important; }
   #expertiseCards:hover .expertise-card, #expertiseCards:hover .expertise-card:hover { transform: none; opacity: 1; filter: none; }
 }
+
+#expertiseCards .expertise-card:focus-visible {
+  outline: 3px solid #efb6a7;
+  outline-offset: 3px;
+}
+#expertiseCards .expertise-card:is(:hover, :focus-within) .expertise-description {
+  max-height: none;
+}

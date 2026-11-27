@@ -166,149 +166,159 @@ function storyLoadImage(url){
   image.src=url;if(image.complete&&image.naturalWidth){clearTimeout(timeout);finish(image)}
  })
 }
-function storyCover(ctx,image,x,y,w,h,radius){
- ctx.save();ctx.beginPath();ctx.roundRect(x,y,w,h,radius);ctx.clip();
- if(image){const scale=Math.max(w/image.width,h/image.height),sw=w/scale,sh=h/scale,sx=(image.width-sw)/2,sy=(image.height-sh)/2;ctx.drawImage(image,sx,sy,sw,sh,x,y,w,h)}
- else{const g=ctx.createLinearGradient(x,y,x+w,y+h);g.addColorStop(0,'#603044');g.addColorStop(1,'#21151e');ctx.fillStyle=g;ctx.fillRect(x,y,w,h);ctx.fillStyle='rgba(255,236,227,.42)';ctx.font='64px Georgia';ctx.fillText('✦',x+w/2-20,y+h/2+20)}
- ctx.restore()
+function storyLines(ctx, text, maxWidth) {
+  const words = String(text || '').trim().split(/\s+/).filter(Boolean);
+  const lines = [];
+  let line = '';
+  for (const word of words) {
+    const next = line ? line + ' ' + word : word;
+    if (line && ctx.measureText(next).width > maxWidth) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = next;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
 }
-function storyWrap(ctx,text,x,y,maxWidth,lineHeight,maxLines){
- const words=String(text||'').replace(/\s+/g,' ').trim().split(' ').filter(Boolean);let lines=[],line='';
- words.forEach(word=>{const next=line?line+' '+word:word;if(ctx.measureText(next).width>maxWidth&&line){lines.push(line);line=word}else line=next});
- if(line)lines.push(line);
- const clipped=lines.length>maxLines;if(clipped)lines=lines.slice(0,maxLines);
- if(clipped&&lines.length){let last=lines[lines.length-1];while(last&&ctx.measureText(last+'…').width>maxWidth)last=last.slice(0,-1);lines[lines.length-1]=last.trimEnd()+'…'}
- lines.forEach((value,index)=>ctx.fillText(value,x,y+index*lineHeight));
- return y+lines.length*lineHeight
-}
-function drawStoryLogo(ctx,x,y,size){
- const r=size/2,g=ctx.createRadialGradient(x-size*.18,y-size*.22,2,x,y,r);
- g.addColorStop(0,'#8b2945');g.addColorStop(.52,'#650d2b');g.addColorStop(1,'#350614');
- ctx.save();ctx.shadowColor='rgba(219,105,138,.66)';ctx.shadowBlur=18;
- ctx.fillStyle=g;ctx.strokeStyle='rgba(245,211,218,.78)';ctx.lineWidth=2;
- ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();
- ctx.strokeStyle='#fff0d8';ctx.lineWidth=3;ctx.lineCap='round';ctx.lineJoin='round';
- ctx.beginPath();ctx.arc(x,y-size*.11,size*.16,0,Math.PI*2);ctx.stroke();
- ctx.beginPath();ctx.moveTo(x-size*.29,y+size*.27);ctx.bezierCurveTo(x-size*.22,y+size*.03,x+size*.22,y+size*.03,x+size*.29,y+size*.27);ctx.stroke();
- ctx.fillStyle='#fff0d8';ctx.beginPath();ctx.moveTo(x+size*.32,y-size*.34);ctx.lineTo(x+size*.35,y-size*.23);ctx.lineTo(x+size*.46,y-size*.20);ctx.lineTo(x+size*.35,y-size*.16);ctx.lineTo(x+size*.32,y-size*.05);ctx.lineTo(x+size*.29,y-size*.16);ctx.lineTo(x+size*.18,y-size*.20);ctx.lineTo(x+size*.29,y-size*.23);ctx.closePath();ctx.fill()
-}
-function drawPublicationRibbon(ctx) {
-  ctx.save();
-  ctx.translate(825,285);
-  ctx.rotate(Math.PI/4);
 
-  // The split ends sit behind the front band and turn under at each fold.
-  for (const side of [-1,1]) {
+function drawEditorialBackdrop(ctx, image, width, height) {
+  ctx.fillStyle = '#391f29';
+  ctx.fillRect(0, 0, width, height);
+  if (image) {
+    // Bleed the photograph past the edges so the blur has no visible seam.
+    const bleed = 30;
+    const photoHeight = height * .78;
+    const scale = Math.max((width + 2 * bleed) / image.width, photoHeight / image.height);
+    const photo = document.createElement('canvas');
+    photo.width = width;
+    photo.height = height;
+    const layer = photo.getContext('2d');
+    layer.filter = 'blur(10px)';
+    layer.drawImage(image, (width - image.width * scale) / 2,
+      height + bleed - image.height * scale, image.width * scale, image.height * scale);
+    // Gradually reveal the photograph down the page.
+    const fade = layer.createLinearGradient(0, 0, 0, height);
+    fade.addColorStop(0, 'transparent');
+    fade.addColorStop(.31, 'transparent');
+    fade.addColorStop(.64, 'rgba(0,0,0,.7)');
+    fade.addColorStop(1, '#000');
+    layer.filter = 'none';
+    layer.globalCompositeOperation = 'destination-in';
+    layer.fillStyle = fade;
+    layer.fillRect(0, 0, width, height);
+    ctx.drawImage(photo, 0, 0);
+  }
+  const shade = ctx.createLinearGradient(0, 0, 0, height);
+  shade.addColorStop(0, 'rgba(26,3,14,.60)');
+  shade.addColorStop(.5, 'rgba(51,11,26,.36)');
+  shade.addColorStop(.85, 'rgba(46,8,22,.55)');
+  shade.addColorStop(1, 'rgba(27,4,15,.76)');
+  ctx.fillStyle = shade;
+  ctx.fillRect(0, 0, width, height);
+  ctx.strokeStyle = '#ae7782';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(32, 50, width - 64, height - 100, 34);
+  ctx.stroke();
+}
+
+let bookmarkArt;
+async function createStoryBlob(article) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = 1920;
+  const ctx = canvas.getContext('2d');
+  if (!article.is_short && !bookmarkArt) {
+    bookmarkArt = storyLoadImage('/assets/story-bookmark.svg').then(image => {
+      if (!image) bookmarkArt = null;
+      return image;
+    });
+  }
+  const [cover, bookmark] = await Promise.all([
+    storyLoadImage(safeExternalUrl(article.image_url)),
+    article.is_short ? null : bookmarkArt,
+    document.fonts.ready
+  ]);
+  if (!article.is_short && !bookmark) throw new Error('Ayraç görseli yüklenemedi.');
+  drawEditorialBackdrop(ctx, cover, canvas.width, canvas.height);
+
+  const ivory = '#f9e9d8';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = ivory;
+  ctx.strokeStyle = ivory;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(135, 136, 41, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.font = '44px Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Ψ', 135, 138);
+  ctx.textAlign = 'left';
+  ctx.font = '32px Georgia, serif';
+  ctx.fillText('Psikolog Beyza Nur Ömültay', 202, 136, 505);
+  if (bookmark) {
     ctx.save();
-    ctx.scale(side,1);
-    const reverse = ctx.createLinearGradient(208,0,295,36);
-    reverse.addColorStop(0,'#21050e');
-    reverse.addColorStop(.68,'#55172a');
-    reverse.addColorStop(1,'#340b19');
-    ctx.fillStyle = reverse;
-    ctx.shadowColor = 'rgba(13,2,7,.55)';
-    ctx.shadowBlur = 9;
-    ctx.shadowOffsetY = 6;
-    ctx.beginPath();
-    ctx.moveTo(212,-29);
-    ctx.lineTo(295,-40);
-    ctx.lineTo(270,7);
-    ctx.lineTo(292,60);
-    ctx.lineTo(214,49);
-    ctx.closePath();
-    ctx.fill();
-    ctx.shadowBlur = ctx.shadowOffsetY = 0;
-    ctx.fillStyle = '#250611';
-    ctx.beginPath();
-    ctx.moveTo(238,-48);
-    ctx.lineTo(257,45);
-    ctx.lineTo(213,52);
-    ctx.closePath();
-    ctx.fill();
+    ctx.shadowColor = 'rgba(15,3,8,.50)';
+    ctx.shadowBlur = 12;
+    ctx.shadowOffsetY = 8;
+    ctx.drawImage(bookmark, 701, -2, 336, 533);
     ctx.restore();
   }
 
-  const face = new Path2D();
-  face.moveTo(-239,-52);
-  face.bezierCurveTo(-92,-74,76,-40,239,-52);
-  face.lineTo(253,45);
-  face.bezierCurveTo(95,65,-80,39,-253,54);
-  face.closePath();
-  const satin = ctx.createLinearGradient(-242,-38,244,36);
-  for (const [stop,color] of [[0,'#320817'],[.11,'#5e1830'],[.27,'#430b21'],[.55,'#590f28'],[.77,'#691e36'],[.92,'#400c20'],[1,'#2c0615']]) {
-    satin.addColorStop(stop,color);
-  }
-  ctx.fillStyle = satin;
-  ctx.shadowColor = 'rgba(16,3,9,.62)';
-  ctx.shadowBlur = 14;
-  ctx.shadowOffsetY = 7;
-  ctx.fill(face);
-  ctx.shadowBlur = ctx.shadowOffsetY = 0;
-  ctx.save();
-  ctx.clip(face);
-  const sheen = ctx.createLinearGradient(0,-62,-6,57);
-  sheen.addColorStop(0,'rgba(255,199,192,.20)');
-  sheen.addColorStop(.3,'rgba(236,161,161,.035)');
-  sheen.addColorStop(.72,'rgba(31,3,15,.07)');
-  sheen.addColorStop(1,'rgba(26,3,13,.44)');
-  ctx.fillStyle = sheen;
-  ctx.fillRect(-256,-74,512,145);
-  ctx.lineWidth = .7;
-  ctx.strokeStyle = 'rgba(250,198,193,.09)';
-  ctx.beginPath();
-  for (let y=-74; y<76; y+=3) {
-    ctx.moveTo(-254,y);
-    ctx.bezierCurveTo(-95,y-16,95,y+10,254,y-5);
-  }
-  ctx.stroke();
-  ctx.restore();
-
   ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.font = '700 46px "Playfair Display",Georgia,serif';
-  ctx.fillStyle = '#fff2df';
-  ctx.shadowColor = 'rgba(27,3,13,.8)';
-  ctx.shadowBlur = 2;
-  ctx.shadowOffsetY = 2;
-  ctx.fillText('Şuan Yayında',-10,-2,394);
+  const title = String(article.title || '').trim();
+  let titleSize = 100;
+  let lines;
+  do {
+    ctx.font = 'italic bold ' + titleSize + 'px Georgia, serif';
+    lines = storyLines(ctx, title, 900);
+    if ((lines.length <= 3 && lines.every(line => ctx.measureText(line).width <= 900)) || titleSize <= 40) break;
+    titleSize -= 2;
+  } while (true);
+  // Keep the entire headline, including unusually long titles, in its allocated band.
+  const titleStep = Math.min(titleSize * 1.05, 480 / Math.max(1, lines.length));
+  if (titleStep < titleSize) ctx.font = 'italic bold ' + Math.floor(titleStep * .93) + 'px Georgia, serif';
+  let y = 677 - (Math.min(lines.length, 2) - 1) * titleStep / 2;
+  for (const line of lines) {
+    ctx.fillText(line, 540, y, 900);
+    y += titleStep;
+  }
+  ctx.font = '33px Georgia, serif';
+  y += 14;
+  const summary = storyLines(ctx, article.description || article.body, 875);
+  const visible = summary.slice(0, 3);
+  if (summary.length > visible.length) visible[2] += '…';
+  for (const line of visible) {
+    ctx.fillText(line, 540, y, 875);
+    y += 46;
+  }
 
-  ctx.translate(229,-20);
-  ctx.rotate(-Math.PI/7);
-  ctx.font = '61.64px "Apple Color Emoji","Segoe UI Emoji",sans-serif';
-  ctx.shadowBlur = 7;
-  ctx.fillText('🎀',0,0);
-  ctx.restore();
-}
-async function createStoryBlob(article){
- await document.fonts.ready;
- const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1920;
- const ctx=canvas.getContext('2d'),imageUrl=safeExternalUrl(article.image_url),image=await storyLoadImage(imageUrl);
- const base=ctx.createLinearGradient(0,0,1080,1920);base.addColorStop(0,'#321b28');base.addColorStop(.48,'#171017');base.addColorStop(1,'#431b30');ctx.fillStyle=base;ctx.fillRect(0,0,1080,1920);
- if(image){ctx.save();ctx.filter='blur(42px) brightness(.42) saturate(1.08)';storyCover(ctx,image,-75,-75,1230,2070,0);ctx.restore()}
- const tint=ctx.createLinearGradient(0,0,1080,1920);tint.addColorStop(0,'rgba(78,18,48,.35)');tint.addColorStop(.45,'rgba(23,12,20,.43)');tint.addColorStop(1,'rgba(18,9,17,.68)');ctx.fillStyle=tint;ctx.fillRect(0,0,1080,1920);
- const vignette=ctx.createRadialGradient(540,890,280,540,890,1080);vignette.addColorStop(0,'rgba(8,4,9,.02)');vignette.addColorStop(1,'rgba(7,3,8,.56)');ctx.fillStyle=vignette;ctx.fillRect(0,0,1080,1920);
- ctx.save();ctx.beginPath();ctx.roundRect(78,108,924,1704,36);ctx.clip();
- if(image){ctx.save();ctx.filter='blur(34px) brightness(.48) saturate(1.12)';storyCover(ctx,image,48,78,984,1764,0);ctx.restore()}
- else{const cardBase=ctx.createLinearGradient(78,108,1002,1812);cardBase.addColorStop(0,'#603044');cardBase.addColorStop(1,'#21151e');ctx.fillStyle=cardBase;ctx.fillRect(78,108,924,1704)}
- const cardShade=ctx.createLinearGradient(78,108,1002,1812);cardShade.addColorStop(0,'rgba(28,10,20,.48)');cardShade.addColorStop(.52,'rgba(17,8,15,.56)');cardShade.addColorStop(1,'rgba(12,6,12,.72)');ctx.fillStyle=cardShade;ctx.fillRect(78,108,924,1704);
- const cardVignette=ctx.createRadialGradient(540,850,240,540,850,900);cardVignette.addColorStop(0,'rgba(15,6,12,.06)');cardVignette.addColorStop(1,'rgba(8,3,8,.42)');ctx.fillStyle=cardVignette;ctx.fillRect(78,108,924,1704);ctx.restore();
- ctx.save();ctx.shadowColor='rgba(244,153,182,.84)';ctx.shadowBlur=66;ctx.strokeStyle='rgba(250,210,220,.8)';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(78,108,924,1704,36);ctx.stroke();ctx.restore();
- ctx.strokeStyle='rgba(247,185,201,.3)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(92,122,896,1676,28);ctx.stroke();
- drawStoryLogo(ctx,162,210,82);
- if(!article.is_short) drawPublicationRibbon(ctx);
- ctx.textAlign='left';ctx.fillStyle='#e8c4cd';ctx.font='600 17px "DM Sans",Arial,sans-serif';ctx.fillText('PSİKOLOG',220,195);
- ctx.fillStyle='#fff5f1';ctx.font='500 29px "Playfair Display",Georgia,serif';ctx.fillText('Beyza Nur Ömültay',220,235);
- ctx.textAlign='center';ctx.fillStyle='#efb4c0';ctx.font='700 21px "DM Sans",Arial,sans-serif';ctx.fillText(String(article.category||(article.is_short?'KISA NOT':'PSİKOLOJİ')).toLocaleUpperCase('tr-TR'),540,790,820);
- ctx.fillStyle='#fff8f6';ctx.shadowColor='rgba(6,3,8,.9)';ctx.shadowBlur=22;
- const title=String(article.title||'');let titleSize=80;ctx.font='italic 700 '+titleSize+'px "Playfair Display",Georgia,serif';
- while(ctx.measureText(title).width>830&&titleSize>25){titleSize-=2;ctx.font='italic 700 '+titleSize+'px "Playfair Display",Georgia,serif'}
- ctx.fillText(title,540,920,830);ctx.shadowBlur=0;
- ctx.fillStyle='#f0e3e6';ctx.font='400 32px "DM Sans",Arial,sans-serif';storyWrap(ctx,article.description||article.body||'',540,1000,800,48,7);
- ctx.strokeStyle='rgba(245,202,213,.48)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(146,1570);ctx.lineTo(934,1570);ctx.stroke();
- ctx.textAlign='left';ctx.fillStyle='#edc0cb';ctx.font='500 22px "DM Sans",Arial,sans-serif';ctx.fillText(storyFormatDate(article),150,1630);
- ctx.fillStyle='#fff6f2';ctx.font='500 29px "Playfair Display",Georgia,serif';ctx.fillText('Psikolog Beyza Nur Ömültay',150,1692,690);
- ctx.textAlign='right';ctx.fillStyle='#f5d8df';ctx.font='700 37px "Cormorant Garamond",Georgia,serif';ctx.shadowColor='rgba(236,149,173,.8)';ctx.shadowBlur=17;ctx.fillText('H.P.R',930,1775);ctx.shadowBlur=0;ctx.textAlign='left';
- return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve({blob,imageIncluded:!!image}):reject(new Error('Story görseli oluşturulamadı.')),'image/png'))
+  const date = storyFormatDate(article).toLocaleUpperCase('tr-TR');
+  ctx.font = '27px Georgia, serif';
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '3px';
+  const lineY = y + 67;
+  const gap = Math.min(290, ctx.measureText(date).width / 2 + 23);
+  ctx.fillText(date, 540, lineY);
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+  ctx.strokeStyle = '#ac7982';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(180, lineY);
+  ctx.lineTo(540 - gap, lineY);
+  ctx.moveTo(540 + gap, lineY);
+  ctx.lineTo(900, lineY);
+  ctx.stroke();
+
+  ctx.font = 'italic 54px Georgia, serif';
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#dba1ae';
+  ctx.fillText('H.P.R', 974, 1800);
+  return new Promise((resolve, reject) => canvas.toBlob(blob => {
+    if (blob) resolve({blob, imageIncluded: !!cover});
+    else reject(new Error('Hikâye görseli oluşturulamadı.'));
+  }, 'image/png'));
 }
 function initStoryMode(){
  let current=null,opener=null,currentBlob=null,currentName='hikaye',previewUrl=null,renderId=0;

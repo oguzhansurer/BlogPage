@@ -191,7 +191,7 @@ function initAdmin(){const login=$('#loginForm');if(!login)return;const loginMsg
 }
 
 function initMobileMenu() {
-  const header = document.querySelector('header.nav, header.adminbar');
+  const header = document.querySelector('header.nav:not(.adminbar)');
   if (!header) return;
   const menu = document.createElement('details');
   menu.className = 'mobile-menu';

@@ -398,3 +398,17 @@ body.story-open{overflow:hidden}
 #expertiseCards .expertise-card:is(:hover, :focus-within) .expertise-description {
   max-height: none;
 }
+
+header.nav .navlinks a, .article-back, .footer a, .adminbar > .tinybtn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.footer .admin-trigger { min-width: 44px; justify-content: center; }
+@media (pointer: coarse) {
+  .story-card-actions .story-icon-button, .story-close, .story-screen-download {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .story-card-shell { grid-template-columns: minmax(0, 1fr) 44px; }
+}

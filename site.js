@@ -208,6 +208,13 @@ async function createStoryBlob(article){
  ctx.save();ctx.shadowColor='rgba(244,153,182,.84)';ctx.shadowBlur=66;ctx.strokeStyle='rgba(250,210,220,.8)';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(78,108,924,1704,36);ctx.stroke();ctx.restore();
  ctx.strokeStyle='rgba(247,185,201,.3)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(92,122,896,1676,28);ctx.stroke();
  drawStoryLogo(ctx,162,210,82);
+ if(!article.is_short){
+  ctx.save();ctx.textAlign='center';
+  ctx.fillStyle='rgba(34,12,24,.72)';ctx.strokeStyle='rgba(247,185,201,.62)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.roundRect(385,292,310,58,29);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#fff0f3';ctx.font='600 22px "DM Sans",Arial,sans-serif';ctx.shadowColor='rgba(236,149,173,.72)';ctx.shadowBlur=12;
+  ctx.fillText('Makalem yayında',540,330);ctx.restore()
+ }
  ctx.textAlign='left';ctx.fillStyle='#e8c4cd';ctx.font='600 17px "DM Sans",Arial,sans-serif';ctx.fillText('PSİKOLOG',220,195);
  ctx.fillStyle='#fff5f1';ctx.font='500 29px "Playfair Display",Georgia,serif';ctx.fillText('Beyza Nur Ömültay',220,235);
  ctx.textAlign='center';ctx.fillStyle='#efb4c0';ctx.font='700 21px "DM Sans",Arial,sans-serif';ctx.fillText(String(article.category||(article.is_short?'KISA NOT':'PSİKOLOJİ')).toLocaleUpperCase('tr-TR'),540,790,820);

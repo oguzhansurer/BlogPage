@@ -95,13 +95,29 @@ function updateArticleSeo(article){
  let jsonLd=$('#articleStructuredData');if(!jsonLd){jsonLd=document.createElement('script');jsonLd.id='articleStructuredData';jsonLd.type='application/ld+json';document.head.appendChild(jsonLd)}
  jsonLd.textContent=JSON.stringify(schema).replace(/</g,'\\u003c');
 }
+function articleBackLink(article) {
+ const list = article?.is_short ? '/kisa-notlar' : '/makaleler';
+ const label = article?.is_short ? 'Kısa notlara dön' : 'Makalelere dön';
+ return '<a class="article-back" data-list-back href="'+list+'">← '+label+'</a>';
+}
 async function initArticle(){
  const target=$('#articleView');if(!target)return;
  const data = $('#publishedArticle');
  const article = data ? JSON.parse(data.textContent) : null;
  if(article){updateArticleSeo(article);storyItems.set(String(article.slug),article)}
  else{document.title='Yazı bulunamadı | Psikolog Beyza Nur Ömültay';setSeoMeta('meta[name="robots"]','noindex,nofollow')}
- target.innerHTML=article?'<a class="article-back" href="/#yazilar">← Tüm yazılara dön</a><div class="card-tag">'+esc(article.category)+' · '+esc(article.date||'Yeni yazı')+'</div><h1>'+esc(article.title)+'</h1><p class="muted article-description">'+esc(article.description)+'</p>'+storyInlineTools(article)+sourceBlock(article)+(article.image_url?'<span class="image-fit-frame article-image-frame"><img class="image-fit-blur" src="'+esc(article.image_url)+'"'+responsiveImage(article.image_url,'(max-width: 760px) 95vw, 900px')+' alt="" aria-hidden="true" fetchpriority="high"><img class="article-hero" src="'+esc(article.image_url)+'"'+responsiveImage(article.image_url,'(max-width: 760px) 95vw, 900px')+' alt="'+esc(article.title)+'" fetchpriority="high"></span>':'')+'<div class="article-body">'+esc(article.body||article.description)+'</div>'+sourceBlock(article)+'<a class="article-back" href="/#yazilar">← Tüm yazılara dön</a>':'<a class="article-back" href="/#yazilar">← Tüm yazılara dön</a><h1>Bu yazı bulunamadı</h1>';
+ target.innerHTML=article?''+articleBackLink(article)+'<div class="card-tag">'+esc(article.category)+' · '+esc(article.date||'Yeni yazı')+'</div><h1>'+esc(article.title)+'</h1><p class="muted article-description">'+esc(article.description)+'</p>'+storyInlineTools(article)+sourceBlock(article)+(article.image_url?'<span class="image-fit-frame article-image-frame"><img class="image-fit-blur" src="'+esc(article.image_url)+'"'+responsiveImage(article.image_url,'(max-width: 760px) 95vw, 900px')+' alt="" aria-hidden="true" fetchpriority="high"><img class="article-hero" src="'+esc(article.image_url)+'"'+responsiveImage(article.image_url,'(max-width: 760px) 95vw, 900px')+' alt="'+esc(article.title)+'" fetchpriority="high"></span>':'')+'<div class="article-body">'+esc(article.body||article.description)+'</div>'+sourceBlock(article)+''+articleBackLink(article)+'':''+articleBackLink(article)+'<h1>Bu yazı bulunamadı</h1>';
+ target.addEventListener('click', event => {
+  const link = event.target.closest('[data-list-back]');
+  if (!link || event.button || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  if (document.referrer && history.length > 1) {
+   const previous = new URL(document.referrer);
+   if (previous.origin === location.origin && previous.pathname === link.pathname) {
+    event.preventDefault();
+    history.back();
+   }
+  }
+ });
  document.querySelectorAll('.year').forEach(x=>x.textContent=new Date().getFullYear())
 }
 
@@ -430,4 +446,3 @@ function initStoryMode(){
 function initAdminBar(){const bar=$('.adminbar');if(!bar)return;let last=window.scrollY,frame=0;const onScroll=()=>{if(frame)return;frame=requestAnimationFrame(()=>{const y=window.scrollY,down=y>last;bar.classList.toggle('adminbar-hidden',down&&y>80);bar.classList.toggle('adminbar-visible',!down||y<=80);last=y;frame=0})};bar.classList.add('adminbar-visible');window.addEventListener('scroll',onScroll,{passive:true})}
 function initParallax(){const scene=$('.parallax-scene');if(!scene||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;const objects=scene.querySelectorAll('[data-depth]');let frame=0;const update=()=>{frame=0;const main=$('main'),scroll=Math.max(0,window.scrollY-main.offsetTop);objects.forEach(item=>{const depth=Number(item.dataset.depth)||.5;item.style.setProperty('--parallax-y',(scroll*(1-depth)).toFixed(1)+'px')})};window.addEventListener('scroll',()=>{if(!frame)frame=requestAnimationFrame(update)},{passive:true});update()}
 })();
-

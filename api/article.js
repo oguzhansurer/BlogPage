@@ -27,7 +27,8 @@ module.exports = async (req, res) => {
     const title = escapeText(post.title+' | Psikolog Beyza Nur Ömültay');
     const description = escapeText((post.description || post.body || '').slice(0,160));
     const data = JSON.stringify(post).replace(/</g,'\\u003c');
-    const content = '<h1>'+escapeText(post.title)+'</h1><p>'+escapeText(post.description)+'</p><div class="article-body">'+escapeText(post.body)+'</div>'+back;
+    const listBack = post.is_short ? '<a class="article-back" href="/kisa-notlar">← Kısa notlara dön</a>' : back;
+    const content = '<h1>'+escapeText(post.title)+'</h1><p>'+escapeText(post.description)+'</p><div class="article-body">'+escapeText(post.body)+'</div>'+listBack;
     const html = template.replace(/<title>.*?<\/title>/,()=>'<title>'+title+'</title>')
       .replace(/(<meta name="description" content=")[^"]*/,(_,start)=>start+description)
       .replace(/(<link rel="canonical" href=")[^"]*/,(_,start)=>start+escapeText(canonical))

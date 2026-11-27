@@ -210,18 +210,18 @@ async function createStoryBlob(article){
  drawStoryLogo(ctx,162,210,82);
  if(!article.is_short){
   ctx.save();
-  const ribbon=ctx.createLinearGradient(260,0,820,0);ribbon.addColorStop(0,'#9e425d');ribbon.addColorStop(.5,'#c76e83');ribbon.addColorStop(1,'#8b344f');
-  ctx.shadowColor='rgba(12,4,10,.55)';ctx.shadowBlur=22;ctx.shadowOffsetY=8;
-  ctx.fillStyle='#64283d';ctx.beginPath();ctx.moveTo(260,294);ctx.lineTo(204,324);ctx.lineTo(260,354);ctx.closePath();ctx.fill();
-  ctx.beginPath();ctx.moveTo(820,294);ctx.lineTo(876,324);ctx.lineTo(820,354);ctx.closePath();ctx.fill();
-  ctx.shadowOffsetY=0;ctx.shadowBlur=0;ctx.fillStyle=ribbon;ctx.strokeStyle='rgba(255,224,229,.88)';ctx.lineWidth=3;
-  ctx.beginPath();ctx.roundRect(246,270,588,108,13);ctx.fill();
-  ctx.save();ctx.beginPath();ctx.roundRect(246,270,588,108,13);ctx.clip();ctx.fillStyle='rgba(255,235,239,.48)';
-  for(let row=0;row<4;row++){const y=286+row*25;for(let col=0;col<18;col++){const x=264+col*33+(row%2?16:0);ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill()}}
-  ctx.restore();ctx.stroke();
-  ctx.strokeStyle='rgba(255,239,241,.42)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(257,281,566,86,8);ctx.stroke();
-  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff8f5';ctx.font='700 38px "DM Sans",Arial,sans-serif';ctx.shadowColor='rgba(48,11,27,.72)';ctx.shadowBlur=8;
-  ctx.fillText('Makalem yayında',540,324,520);ctx.restore();ctx.textBaseline='alphabetic'
+  const shade=ctx.createLinearGradient(150,300,930,450);shade.addColorStop(0,'#4f1429');shade.addColorStop(.5,'#6f1c37');shade.addColorStop(1,'#4a1025');
+  const ribbon=ctx.createLinearGradient(220,290,860,430);ribbon.addColorStop(0,'#8d2946');ribbon.addColorStop(.48,'#a83d59');ribbon.addColorStop(1,'#74203b');
+  ctx.shadowColor='rgba(12,4,10,.58)';ctx.shadowBlur=24;ctx.shadowOffsetY=12;
+  ctx.fillStyle=shade;ctx.beginPath();ctx.moveTo(270,318);ctx.lineTo(168,286);ctx.lineTo(198,398);ctx.lineTo(294,370);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.moveTo(810,318);ctx.lineTo(912,286);ctx.lineTo(882,398);ctx.lineTo(786,370);ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;ctx.shadowOffsetY=0;ctx.fillStyle=ribbon;ctx.strokeStyle='rgba(255,225,230,.82)';ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(246,294);ctx.quadraticCurveTo(540,377,834,294);ctx.lineTo(834,386);ctx.quadraticCurveTo(540,469,246,386);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.strokeStyle='rgba(255,222,228,.5)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(255,305);ctx.quadraticCurveTo(540,383,825,305);ctx.stroke();
+  ctx.fillStyle='rgba(54,12,27,.42)';ctx.beginPath();ctx.moveTo(168,286);ctx.lineTo(234,337);ctx.lineTo(198,398);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.moveTo(912,286);ctx.lineTo(846,337);ctx.lineTo(882,398);ctx.closePath();ctx.fill();
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff8f5';ctx.font='700 38px "DM Sans",Arial,sans-serif';ctx.shadowColor='rgba(48,11,27,.78)';ctx.shadowBlur=9;
+  ctx.fillText('Makalem yayında',540,382,510);ctx.restore();ctx.textBaseline='alphabetic'
  }
  ctx.textAlign='left';ctx.fillStyle='#e8c4cd';ctx.font='600 17px "DM Sans",Arial,sans-serif';ctx.fillText('PSİKOLOG',220,195);
  ctx.fillStyle='#fff5f1';ctx.font='500 29px "Playfair Display",Georgia,serif';ctx.fillText('Beyza Nur Ömültay',220,235);

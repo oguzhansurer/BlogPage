@@ -209,7 +209,11 @@ async function createStoryBlob(article){
  ctx.strokeStyle='rgba(247,185,201,.3)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(92,122,896,1676,28);ctx.stroke();
  drawStoryLogo(ctx,162,210,82);
  if(!article.is_short){
-  ctx.save();ctx.translate(872,250);ctx.rotate(-Math.PI/4);
+  ctx.save();
+  // Bridge the top and right edges of the card, with room for both ribbon tails.
+  ctx.translate(855,255);
+  ctx.rotate(Math.PI/4);
+  ctx.scale(.92,.92);
   const shade=ctx.createLinearGradient(-230,-40,230,50);shade.addColorStop(0,'#4f1429');shade.addColorStop(.5,'#6f1c37');shade.addColorStop(1,'#4a1025');
   const ribbon=ctx.createLinearGradient(-210,-42,210,42);ribbon.addColorStop(0,'#8d2946');ribbon.addColorStop(.48,'#a83d59');ribbon.addColorStop(1,'#74203b');
   ctx.shadowColor='rgba(12,4,10,.58)';ctx.shadowBlur=22;ctx.shadowOffsetY=10;
